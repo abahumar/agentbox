@@ -28,6 +28,9 @@ class ABOX_Admin {
 
         // Print view AJAX handler
         add_action( 'wp_ajax_abox_print_boxes', array( $this, 'print_boxes_view' ) );
+
+        // Collecting list AJAX handler
+        add_action( 'wp_ajax_abox_collecting_list', array( $this, 'collecting_list_view' ) );
     }
 
     /**
@@ -194,5 +197,83 @@ class ABOX_Admin {
             ),
             admin_url( 'admin-ajax.php' )
         );
+    }
+
+    /**
+     * Get collecting list URL for an order
+     *
+     * @param int $order_id Order ID.
+     * @return string
+     */
+    public static function get_collecting_list_url( $order_id ) {
+        return add_query_arg(
+            array(
+                'action'   => 'abox_collecting_list',
+                'order_id' => $order_id,
+                'nonce'    => wp_create_nonce( 'abox_collecting_nonce' ),
+            ),
+            admin_url( 'admin-ajax.php' )
+        );
+    }
+
+    /**
+     * Render collecting list view (consolidated items from all boxes)
+     */
+    public function collecting_list_view() {
+        // Check permissions
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_die( esc_html__( 'You do not have permission to view this page.', 'agent-box-orders' ) );
+        }
+
+        // Verify nonce
+        if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['nonce'] ) ), 'abox_collecting_nonce' ) ) {
+            wp_die( esc_html__( 'Security check failed.', 'agent-box-orders' ) );
+        }
+
+        $order_id = isset( $_GET['order_id'] ) ? absint( $_GET['order_id'] ) : 0;
+
+        if ( ! $order_id ) {
+            wp_die( esc_html__( 'Invalid order ID.', 'agent-box-orders' ) );
+        }
+
+        $order = wc_get_order( $order_id );
+
+        if ( ! $order ) {
+            wp_die( esc_html__( 'Order not found.', 'agent-box-orders' ) );
+        }
+
+        $boxes    = $order->get_meta( '_abox_boxes' );
+        $agent_id = $order->get_meta( '_abox_agent_id' );
+
+        if ( empty( $boxes ) || ! is_array( $boxes ) ) {
+            wp_die( esc_html__( 'No box data available for this order.', 'agent-box-orders' ) );
+        }
+
+        // Consolidate all items from all boxes
+        $consolidated_items = array();
+
+        foreach ( $boxes as $box ) {
+            foreach ( $box['items'] as $item ) {
+                // Create unique key based on product_id and variation_id
+                $variation_id = isset( $item['variation_id'] ) ? $item['variation_id'] : 0;
+                $key = $item['product_id'] . '_' . $variation_id;
+
+                if ( isset( $consolidated_items[ $key ] ) ) {
+                    // Add quantity to existing item
+                    $consolidated_items[ $key ]['quantity'] += $item['quantity'];
+                } else {
+                    // Add new item
+                    $consolidated_items[ $key ] = $item;
+                }
+            }
+        }
+
+        // Sort by product name
+        usort( $consolidated_items, function( $a, $b ) {
+            return strcmp( $a['product_name'], $b['product_name'] );
+        });
+
+        include ABOX_PLUGIN_DIR . 'admin/views/print-collecting-list.php';
+        exit;
     }
 }

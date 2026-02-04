@@ -5,6 +5,13 @@ All notable changes to Agent Box Orders for WooCommerce will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.2.1] - 2025-02-04
+
+### Changed
+- Improved variable product UI: variation select dropdown now displays inline with product field instead of stacking below
+- Applied inline layout to admin create order, frontend submit order, and admin edit box order forms
+- Added responsive behavior to stack variation select on smaller screens for better mobile usability
+
 ## [1.2.0] - 2025-02-04
 
 ### Added

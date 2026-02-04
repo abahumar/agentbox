@@ -138,32 +138,9 @@ foreach ( $boxes as $box ) {
             <span class="dashicons dashicons-printer"></span>
             <?php esc_html_e( 'Print Packing List', 'agent-box-orders' ); ?>
         </a>
-        <button type="button" class="button abox-copy-breakdown" data-order-id="<?php echo esc_attr( $order->get_id() ); ?>">
-            <span class="dashicons dashicons-clipboard"></span>
-            <?php esc_html_e( 'Copy Breakdown', 'agent-box-orders' ); ?>
-        </button>
+        <a href="<?php echo esc_url( ABOX_Admin::get_collecting_list_url( $order->get_id() ) ); ?>" target="_blank" class="button abox-collecting-list">
+            <span class="dashicons dashicons-list-view"></span>
+            <?php esc_html_e( 'Collecting List', 'agent-box-orders' ); ?>
+        </a>
     </div>
 </div>
-
-<script type="text/javascript">
-jQuery(document).ready(function($) {
-    $('.abox-copy-breakdown').on('click', function() {
-        var text = '';
-        <?php foreach ( $boxes as $index => $box ) : ?>
-        text += "<?php echo esc_js( sprintf( __( 'Box %d: %s', 'agent-box-orders' ), $index + 1, $box['label'] ) ); ?>\n";
-        <?php foreach ( $box['items'] as $item ) :
-            $variation_text = ! empty( $item['variation_attrs'] ) ? ' (' . $item['variation_attrs'] . ')' : '';
-        ?>
-        text += "  - <?php echo esc_js( $item['product_name'] . $variation_text ); ?> x <?php echo esc_js( $item['quantity'] ); ?>\n";
-        <?php endforeach; ?>
-        text += "\n";
-        <?php endforeach; ?>
-
-        navigator.clipboard.writeText(text).then(function() {
-            alert('<?php echo esc_js( __( 'Breakdown copied to clipboard!', 'agent-box-orders' ) ); ?>');
-        }).catch(function() {
-            alert('<?php echo esc_js( __( 'Failed to copy. Please try again.', 'agent-box-orders' ) ); ?>');
-        });
-    });
-});
-</script>

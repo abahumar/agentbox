@@ -145,17 +145,15 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
         }
 
         .header h1 {
-            font-size: 14px;
+            font-size: 16px;
             margin: 0 0 4px 0;
-            text-align: center;
+            text-align: left;
         }
 
         .order-info {
-            flex-wrap: wrap;
             display: flex;
-            gap: 15px;
+            flex-direction: column;
             font-size: 15px;
-            justify-content: center;
         }
 
         .order-info-item {
@@ -289,7 +287,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
             <?php if ( $pickup_cod_time ) : ?>
                 <div class="order-info-item">
                     <strong><?php esc_html_e( 'Pickup/COD Time:', 'agent-box-orders' ); ?></strong>
-                    <span><?php echo esc_html( $pickup_cod_time ); ?></span>
+                    <span><?php echo esc_html( date( 'h:iA', strtotime( $pickup_cod_time ) ) ); ?></span>
                 </div>
             <?php endif; ?>
         </div>

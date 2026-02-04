@@ -222,12 +222,14 @@ $default_country = WC()->countries->get_base_country();
     <tr class="abox-item-row">
         <td class="abox-col-product">
             <div class="abox-product-search-wrapper">
-                <input type="text" class="abox-product-search regular-text" placeholder="<?php esc_attr_e( 'Search products...', 'agent-box-orders' ); ?>" autocomplete="off">
-                <input type="hidden" class="abox-product-id" value="">
-                <input type="hidden" class="abox-variation-id" value="">
-                <input type="hidden" class="abox-product-type" value="">
-                <input type="hidden" class="abox-product-price" value="0">
-                <div class="abox-search-results"></div>
+                <div class="abox-product-search-field">
+                    <input type="text" class="abox-product-search regular-text" placeholder="<?php esc_attr_e( 'Search products...', 'agent-box-orders' ); ?>" autocomplete="off">
+                    <input type="hidden" class="abox-product-id" value="">
+                    <input type="hidden" class="abox-variation-id" value="">
+                    <input type="hidden" class="abox-product-type" value="">
+                    <input type="hidden" class="abox-product-price" value="0">
+                    <div class="abox-search-results"></div>
+                </div>
                 <div class="abox-variation-select-wrapper" style="display: none;">
                     <select class="abox-variation-select">
                         <option value=""><?php esc_html_e( 'Select variation...', 'agent-box-orders' ); ?></option>

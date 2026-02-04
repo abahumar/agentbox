@@ -186,6 +186,16 @@
     margin-top: 12px;
     padding-top: 12px;
     border-top: 1px solid #e5e7eb;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.abox-product-search-field {
+    flex: 1;
+    min-width: 150px;
+    position: relative;
 }
 
 .abox-product-search-input {
@@ -219,6 +229,11 @@
 
 .abox-search-results.visible {
     display: block;
+}
+
+/* Search results positioned within the field container */
+.abox-product-search-field .abox-search-results {
+    width: 100%;
 }
 
 .abox-search-result-item {
@@ -363,15 +378,19 @@
 
 /* Variation Selector */
 .abox-variation-selector {
-    margin-top: 8px;
-    padding: 8px;
-    background: #f9fafb;
-    border-radius: 4px;
+    flex: 1;
+    min-width: 150px;
+    padding: 0;
+    background: transparent;
 }
 
 .abox-variation-selector select {
     width: 100%;
-    padding: 6px;
+    padding: 8px 12px;
+    border: 1px solid #3b82f6;
+    border-radius: 4px;
+    font-size: 14px;
+    background: #fff;
 }
 
 /* Responsive */
@@ -384,5 +403,16 @@
 
     .abox-accordion-summary {
         display: none;
+    }
+
+    /* Stack product search and variation select on small screens */
+    .abox-product-search-container {
+        flex-direction: column;
+    }
+
+    .abox-product-search-field,
+    .abox-variation-selector {
+        width: 100%;
+        min-width: 100%;
     }
 }

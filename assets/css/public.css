@@ -168,6 +168,16 @@
 /* Product Search */
 .abox-product-search-wrapper {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.abox-product-search-field {
+    flex: 1;
+    min-width: 120px;
+    position: relative;
 }
 
 .abox-product-search {
@@ -196,6 +206,11 @@
     z-index: 1000;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     display: none;
+}
+
+/* Search results positioned within the field container */
+.abox-product-search-field .abox-search-results {
+    width: 100%;
 }
 
 .abox-search-result {
@@ -272,17 +287,23 @@
 
 /* Variation Select Wrapper */
 .abox-variation-select-wrapper {
-    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 120px;
 }
 
 .abox-variation-select {
     width: 100%;
+    flex: 1;
     padding: 8px 12px;
     border: 1px solid #0073aa;
     border-radius: 4px;
     font-size: 13px;
     background: #fff;
     cursor: pointer;
+    min-width: 100px;
 }
 
 .abox-variation-select:focus {
@@ -295,6 +316,7 @@
     font-size: 12px;
     color: #666;
     font-style: italic;
+    white-space: nowrap;
 }
 
 /* Quantity Input */
@@ -667,6 +689,17 @@
 
     .abox-item-row > div {
         width: 100%;
+    }
+
+    /* Stack product search and variation select on small screens */
+    .abox-product-search-wrapper {
+        flex-direction: column;
+    }
+
+    .abox-product-search-field,
+    .abox-variation-select-wrapper {
+        width: 100%;
+        min-width: 100%;
     }
 
     .abox-col-qty,

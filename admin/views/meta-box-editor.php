@@ -100,8 +100,10 @@ if ( ! defined( 'ABSPATH' ) ) {
                     </table>
 
                     <div class="abox-product-search-container">
-                        <input type="text" class="abox-product-search-input" placeholder="<?php esc_attr_e( 'Search products to add...', 'agent-box-orders' ); ?>">
-                        <div class="abox-search-results"></div>
+                        <div class="abox-product-search-field">
+                            <input type="text" class="abox-product-search-input" placeholder="<?php esc_attr_e( 'Search products to add...', 'agent-box-orders' ); ?>">
+                            <div class="abox-search-results"></div>
+                        </div>
                     </div>
                 </div>
             </div>

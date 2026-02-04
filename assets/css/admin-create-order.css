@@ -319,6 +319,16 @@
 /* Product Search */
 .abox-admin-create-order .abox-product-search-wrapper {
     position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.abox-admin-create-order .abox-product-search-field {
+    flex: 1;
+    min-width: 150px;
+    position: relative;
 }
 
 .abox-admin-create-order .abox-product-search {
@@ -337,6 +347,11 @@
     overflow-y: auto;
     z-index: 100;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Search results positioned within the field container */
+.abox-admin-create-order .abox-product-search-field .abox-search-results {
+    width: 100%;
 }
 
 .abox-admin-create-order .abox-search-result {
@@ -431,14 +446,16 @@
 
 /* Variation Select */
 .abox-admin-create-order .abox-variation-select-wrapper {
-    margin-top: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
+    flex: 1;
+    min-width: 150px;
 }
 
 .abox-admin-create-order .abox-variation-select {
     flex: 1;
+    min-width: 120px;
 }
 
 .abox-admin-create-order .abox-variation-loading {
@@ -530,5 +547,16 @@
 
     .abox-admin-create-order .abox-items-table th.abox-col-price {
         display: none;
+    }
+
+    /* Stack product search and variation select on small screens */
+    .abox-admin-create-order .abox-product-search-wrapper {
+        flex-direction: column;
+    }
+
+    .abox-admin-create-order .abox-product-search-field,
+    .abox-admin-create-order .abox-variation-select-wrapper {
+        width: 100%;
+        min-width: 100%;
     }
 }

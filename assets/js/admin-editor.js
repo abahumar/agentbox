@@ -380,7 +380,7 @@
                         });
 
                         html += '</select></div>';
-                        $container.find('.abox-search-results').after(html);
+                        $container.append(html);
                     } else {
                         alert(aboxEditorData.i18n.noVariations);
                     }
@@ -431,8 +431,10 @@
                 '<tbody></tbody>' +
                 '</table>' +
                 '<div class="abox-product-search-container">' +
+                '<div class="abox-product-search-field">' +
                 '<input type="text" class="abox-product-search-input" placeholder="' + aboxEditorData.i18n.searchPlaceholder + '">' +
                 '<div class="abox-search-results"></div>' +
+                '</div>' +
                 '</div>' +
                 '</div></div>';
 
