@@ -51,6 +51,8 @@ class ABOX_Capabilities {
         $shop_manager = get_role( 'shop_manager' );
         if ( $shop_manager ) {
             $shop_manager->add_cap( self::CAPABILITY );
+            // Add list_users capability so shop managers can search customers
+            $shop_manager->add_cap( 'list_users' );
         }
 
         // Flush rewrite rules
@@ -69,6 +71,12 @@ class ABOX_Capabilities {
             if ( $role ) {
                 $role->remove_cap( self::CAPABILITY );
             }
+        }
+
+        // Remove list_users capability from shop_manager (added by this plugin)
+        $shop_manager = get_role( 'shop_manager' );
+        if ( $shop_manager ) {
+            $shop_manager->remove_cap( 'list_users' );
         }
 
         // Note: We keep the sales_agent role to preserve user assignments
@@ -134,6 +142,13 @@ class ABOX_Capabilities {
         // If admin doesn't have our capability, run activation
         if ( $admin_role && ! $admin_role->has_cap( self::CAPABILITY ) ) {
             self::activate();
+            return;
+        }
+
+        // Ensure shop_manager has list_users capability for customer search
+        $shop_manager = get_role( 'shop_manager' );
+        if ( $shop_manager && ! $shop_manager->has_cap( 'list_users' ) ) {
+            $shop_manager->add_cap( 'list_users' );
         }
     }
 }
