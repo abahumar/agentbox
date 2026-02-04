@@ -1,0 +1,217 @@
+/**
+ * Agent Box Orders - Admin Styles
+ */
+
+/* Meta Box Content */
+.abox-meta-box-content {
+    padding: 10px 0;
+}
+
+/* Agent Info Row */
+.abox-agent-info-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 15px;
+    background: #f0f7ff;
+    border-radius: 4px;
+    margin-bottom: 15px;
+}
+
+.abox-agent-info-row .dashicons {
+    color: #0073aa;
+}
+
+.abox-agent-email {
+    color: #666;
+    font-size: 13px;
+}
+
+/* Summary Bar */
+.abox-summary-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 4px;
+    margin-bottom: 20px;
+}
+
+.abox-summary-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.abox-summary-item strong {
+    color: #666;
+}
+
+/* Boxes List */
+.abox-boxes-list {
+    margin-bottom: 20px;
+}
+
+.abox-box-item {
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.abox-box-header-admin {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background: linear-gradient(to right, #0073aa, #005177);
+    color: #fff;
+}
+
+.abox-box-header-admin h4 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.abox-box-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 50%;
+    font-weight: 700;
+}
+
+.abox-box-item-count {
+    font-size: 12px;
+    opacity: 0.9;
+}
+
+/* Items Table */
+.abox-items-table {
+    margin: 0;
+    border: none;
+}
+
+.abox-items-table th,
+.abox-items-table td {
+    padding: 10px 12px;
+}
+
+.abox-items-table .abox-col-product {
+    width: auto;
+}
+
+.abox-items-table .abox-col-qty {
+    width: 60px;
+    text-align: center;
+}
+
+.abox-items-table .abox-col-price,
+.abox-items-table .abox-col-subtotal {
+    width: 100px;
+    text-align: right;
+}
+
+.abox-product-sku {
+    color: #666;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+.abox-variation-attrs {
+    display: inline-block;
+    color: #0073aa;
+    font-size: 12px;
+    font-style: italic;
+    margin-bottom: 2px;
+}
+
+.abox-product-deleted {
+    color: #dc3545;
+    font-size: 12px;
+    font-style: italic;
+}
+
+.abox-items-table tfoot th {
+    background: #f8f9fa;
+}
+
+.abox-box-total-label {
+    text-align: right;
+}
+
+.abox-box-total-value {
+    font-weight: 700;
+    color: #0073aa;
+}
+
+/* Actions */
+.abox-actions {
+    padding-top: 15px;
+    border-top: 1px solid #ddd;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.abox-print-breakdown,
+.abox-copy-breakdown {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    text-decoration: none;
+}
+
+.abox-print-breakdown .dashicons,
+.abox-copy-breakdown .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.abox-print-breakdown .dashicons {
+    margin-top: -1px;
+}
+
+/* Orders List Column */
+.abox-boxes-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 6px;
+    background: #0073aa;
+    color: #fff;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+/* Column width in orders list */
+.column-abox_boxes {
+    width: 60px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 782px) {
+    .abox-summary-bar {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .abox-box-header-admin {
+        flex-direction: column;
+        gap: 5px;
+        text-align: center;
+    }
+}
