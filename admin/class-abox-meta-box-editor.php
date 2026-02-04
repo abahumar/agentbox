@@ -247,11 +247,28 @@ class ABOX_Meta_Box_Editor {
                     continue;
                 }
 
+                // Get variation attributes if missing and we have a variation_id
+                $variation_attrs = isset( $item['variation_attrs'] ) ? sanitize_text_field( wp_unslash( $item['variation_attrs'] ) ) : '';
+
+                if ( empty( $variation_attrs ) && $variation_id ) {
+                    $variation_attrs = $this->get_variation_attributes_string( $variation_id, $product_id );
+                }
+
+                // Get product name if missing
+                $product_name = isset( $item['product_name'] ) ? sanitize_text_field( wp_unslash( $item['product_name'] ) ) : '';
+
+                if ( empty( $product_name ) ) {
+                    $product = wc_get_product( $variation_id ? $variation_id : $product_id );
+                    if ( $product ) {
+                        $product_name = $product->get_name();
+                    }
+                }
+
                 $sanitized_items[] = array(
                     'product_id'      => $product_id,
                     'variation_id'    => $variation_id,
-                    'product_name'    => isset( $item['product_name'] ) ? sanitize_text_field( wp_unslash( $item['product_name'] ) ) : '',
-                    'variation_attrs' => isset( $item['variation_attrs'] ) ? sanitize_text_field( wp_unslash( $item['variation_attrs'] ) ) : '',
+                    'product_name'    => $product_name,
+                    'variation_attrs' => $variation_attrs,
                     'quantity'        => $quantity,
                     'price'           => isset( $item['price'] ) ? floatval( $item['price'] ) : 0,
                 );
@@ -268,6 +285,42 @@ class ABOX_Meta_Box_Editor {
         }
 
         return $sanitized;
+    }
+
+    /**
+     * Get variation attributes as a formatted string
+     *
+     * @param int $variation_id Variation ID.
+     * @param int $product_id   Parent product ID.
+     * @return string Formatted attributes string.
+     */
+    private function get_variation_attributes_string( $variation_id, $product_id ) {
+        $variation = wc_get_product( $variation_id );
+
+        if ( ! $variation || 'variation' !== $variation->get_type() ) {
+            return '';
+        }
+
+        $parent_product       = wc_get_product( $product_id );
+        $variation_attributes = $variation->get_variation_attributes();
+        $attr_parts           = array();
+
+        foreach ( $variation_attributes as $attr_key => $attr_value ) {
+            $taxonomy  = str_replace( 'attribute_', '', $attr_key );
+            $attr_name = wc_attribute_label( $taxonomy, $parent_product );
+
+            if ( $attr_value ) {
+                if ( taxonomy_exists( $taxonomy ) ) {
+                    $term = get_term_by( 'slug', $attr_value, $taxonomy );
+                    if ( $term ) {
+                        $attr_value = $term->name;
+                    }
+                }
+                $attr_parts[] = $attr_name . ': ' . ucfirst( $attr_value );
+            }
+        }
+
+        return implode( ', ', $attr_parts );
     }
 
     /**

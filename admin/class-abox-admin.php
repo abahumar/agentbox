@@ -167,8 +167,15 @@ class ABOX_Admin {
             wp_die( esc_html__( 'No box data available for this order.', 'agent-box-orders' ) );
         }
 
-        // Include print template
-        include ABOX_PLUGIN_DIR . 'admin/views/print-boxes.php';
+        // Get template setting
+        $template = get_option( 'abox_packing_list_template', 'default' );
+
+        // Include appropriate print template
+        if ( 'compact' === $template ) {
+            include ABOX_PLUGIN_DIR . 'admin/views/print-boxes-compact.php';
+        } else {
+            include ABOX_PLUGIN_DIR . 'admin/views/print-boxes.php';
+        }
         exit;
     }
 

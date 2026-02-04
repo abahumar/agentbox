@@ -114,6 +114,27 @@ class ABOX_Settings {
                 'type' => 'sectionend',
                 'id'   => 'abox_settings_section',
             ),
+            array(
+                'title' => __( 'Packing List Settings', 'agent-box-orders' ),
+                'type'  => 'title',
+                'desc'  => __( 'Configure the packing list print template.', 'agent-box-orders' ),
+                'id'    => 'abox_packing_list_section',
+            ),
+            array(
+                'title'   => __( 'Packing List Template', 'agent-box-orders' ),
+                'desc'    => __( 'Select the template style for printing packing lists.', 'agent-box-orders' ),
+                'id'      => 'abox_packing_list_template',
+                'type'    => 'select',
+                'default' => 'default',
+                'options' => array(
+                    'default' => __( 'Default (Single Column)', 'agent-box-orders' ),
+                    'compact' => __( 'Compact (Two-Column)', 'agent-box-orders' ),
+                ),
+            ),
+            array(
+                'type' => 'sectionend',
+                'id'   => 'abox_packing_list_section',
+            ),
         );
 
         return $settings;
@@ -149,12 +170,13 @@ class ABOX_Settings {
      */
     public static function get_settings() {
         return array(
-            'max_boxes'            => absint( get_option( 'abox_max_boxes', 10 ) ),
-            'max_items_per_box'    => absint( get_option( 'abox_max_items_per_box', 20 ) ),
-            'allowed_roles'        => get_option( 'abox_allowed_roles', array( 'sales_agent', 'shop_manager' ) ),
-            'clear_cart'           => 'yes' === get_option( 'abox_clear_cart', 'yes' ),
-            'guest_mode'           => 'yes' === get_option( 'abox_guest_mode', 'no' ),
-            'enable_admin_editing' => 'yes' === get_option( 'abox_enable_admin_editing', 'no' ),
+            'max_boxes'              => absint( get_option( 'abox_max_boxes', 10 ) ),
+            'max_items_per_box'      => absint( get_option( 'abox_max_items_per_box', 20 ) ),
+            'allowed_roles'          => get_option( 'abox_allowed_roles', array( 'sales_agent', 'shop_manager' ) ),
+            'clear_cart'             => 'yes' === get_option( 'abox_clear_cart', 'yes' ),
+            'guest_mode'             => 'yes' === get_option( 'abox_guest_mode', 'no' ),
+            'enable_admin_editing'   => 'yes' === get_option( 'abox_enable_admin_editing', 'no' ),
+            'packing_list_template'  => get_option( 'abox_packing_list_template', 'default' ),
         );
     }
 

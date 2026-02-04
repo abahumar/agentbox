@@ -17,6 +17,68 @@ $order_number   = $order->get_order_number();
 $order_date     = $order->get_date_created()->date_i18n( get_option( 'date_format' ) );
 $customer_name  = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 
+/**
+ * Helper function to get variation attributes string (values only, no attribute names)
+ *
+ * @param array $item Item data.
+ * @return string Formatted variation values.
+ */
+if ( ! function_exists( 'abox_get_variation_display' ) ) {
+    function abox_get_variation_display( $item ) {
+        // If no variation_id, return empty
+        if ( empty( $item['variation_id'] ) ) {
+            return '-';
+        }
+
+        // Fetch from the variation product
+        $variation = wc_get_product( $item['variation_id'] );
+
+        if ( ! $variation || 'variation' !== $variation->get_type() ) {
+            return '-';
+        }
+
+        $parent_product       = wc_get_product( $item['product_id'] );
+        $variation_attributes = $variation->get_variation_attributes();
+        $attr_values          = array();
+
+        foreach ( $variation_attributes as $attr_key => $attr_value ) {
+            $taxonomy = str_replace( 'attribute_', '', $attr_key );
+
+            if ( $attr_value ) {
+                if ( taxonomy_exists( $taxonomy ) ) {
+                    $term = get_term_by( 'slug', $attr_value, $taxonomy );
+                    if ( $term ) {
+                        $attr_value = $term->name;
+                    }
+                }
+                $attr_values[] = ucfirst( $attr_value );
+            }
+        }
+
+        return ! empty( $attr_values ) ? implode( ', ', $attr_values ) : '-';
+    }
+}
+
+/**
+ * Helper function to get parent product name
+ *
+ * @param array $item Item data.
+ * @return string Parent product name.
+ */
+if ( ! function_exists( 'abox_get_product_name' ) ) {
+    function abox_get_product_name( $item ) {
+        // Get parent product
+        $product = wc_get_product( $item['product_id'] );
+
+        if ( $product ) {
+            return $product->get_name();
+        }
+
+        // Fallback to stored product_name
+        return isset( $item['product_name'] ) ? $item['product_name'] : '';
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -227,8 +289,8 @@ $customer_name  = $order->get_billing_first_name() . ' ' . $order->get_billing_l
                     <?php foreach ( $box['items'] as $item ) : ?>
                         <tr>
                             <td class="col-checkbox"><span class="checkbox-cell"></span></td>
-                            <td class="col-product"><?php echo esc_html( $item['product_name'] ); ?></td>
-                            <td class="col-variation"><?php echo ! empty( $item['variation_attrs'] ) ? esc_html( $item['variation_attrs'] ) : '-'; ?></td>
+                            <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
+                            <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
                             <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
                         </tr>
                     <?php endforeach; ?>
