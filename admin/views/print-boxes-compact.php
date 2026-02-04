@@ -154,7 +154,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
             flex-wrap: wrap;
             display: flex;
             gap: 15px;
-            font-size: 12px;
+            font-size: 15px;
             justify-content: center;
         }
 
@@ -314,7 +314,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
                         $box_index++;
                     ?>
                         <tr class="box-header-row">
-                            <td colspan="4"><?php echo esc_html( $box['label'] ); ?></td>
+                            <td colspan="4"><?php printf( 'Box %d: %s', $box_index, esc_html( $box['label'] ) ); ?></td>
                         </tr>
                         <?php foreach ( $box['items'] as $item ) : ?>
                             <tr>
@@ -342,9 +342,13 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ( $right_boxes as $box ) : ?>
+                    <?php
+                    $right_box_index = $half;
+                    foreach ( $right_boxes as $box ) :
+                        $right_box_index++;
+                    ?>
                         <tr class="box-header-row">
-                            <td colspan="4"><?php echo esc_html( $box['label'] ); ?></td>
+                            <td colspan="4"><?php printf( 'Box %d: %s', $right_box_index, esc_html( $box['label'] ) ); ?></td>
                         </tr>
                         <?php foreach ( $box['items'] as $item ) : ?>
                             <tr>
