@@ -280,7 +280,7 @@ class ABOX_Admin_Create_Order {
                             $attr_value = $term->name;
                         }
                     }
-                    $attribute_parts[] = $attr_name . ': ' . ucfirst( $attr_value );
+                    $attribute_parts[] = ucfirst( $attr_value );
                 }
             }
 
@@ -334,11 +334,25 @@ class ABOX_Admin_Create_Order {
             wp_send_json_error( array( 'message' => __( 'Permission denied.', 'agent-box-orders' ) ) );
         }
 
-        // Get form data
-        $boxes        = isset( $_POST['boxes'] ) ? $_POST['boxes'] : array();
+        // Get form data - support both JSON (FormData) and array formats
+        if ( ! empty( $_POST['boxes_json'] ) ) {
+            $boxes = json_decode( wp_unslash( $_POST['boxes_json'] ), true );
+            if ( ! is_array( $boxes ) ) {
+                $boxes = array();
+            }
+        } else {
+            $boxes = isset( $_POST['boxes'] ) ? $_POST['boxes'] : array();
+        }
         $customer_id  = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
         $order_status = isset( $_POST['order_status'] ) ? sanitize_text_field( wp_unslash( $_POST['order_status'] ) ) : 'pending';
         $billing      = isset( $_POST['billing'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['billing'] ) ) : array();
+
+        // Payment & Collection fields
+        $payment_status    = isset( $_POST['payment_status'] ) ? sanitize_text_field( wp_unslash( $_POST['payment_status'] ) ) : '';
+        $collection_method = isset( $_POST['collection_method'] ) ? sanitize_text_field( wp_unslash( $_POST['collection_method'] ) ) : '';
+        $pickup_cod_date   = isset( $_POST['pickup_cod_date'] ) ? sanitize_text_field( wp_unslash( $_POST['pickup_cod_date'] ) ) : '';
+        $pickup_cod_time   = isset( $_POST['pickup_cod_time'] ) ? sanitize_text_field( wp_unslash( $_POST['pickup_cod_time'] ) ) : '';
+        $receipt_notes     = isset( $_POST['receipt_notes'] ) ? sanitize_textarea_field( wp_unslash( $_POST['receipt_notes'] ) ) : '';
 
         // Validate boxes
         if ( empty( $boxes ) || ! is_array( $boxes ) ) {
@@ -420,6 +434,88 @@ class ABOX_Admin_Create_Order {
             $order->update_meta_data( '_abox_boxes', $sanitized_boxes );
             $order->update_meta_data( '_abox_agent_id', get_current_user_id() );
             $order->update_meta_data( '_abox_created_from_admin', 'yes' );
+
+            // Save Payment & Collection meta
+            if ( $payment_status ) {
+                $order->update_meta_data( '_payment_status', $payment_status );
+            }
+            if ( $collection_method ) {
+                $order->update_meta_data( '_collection_method', $collection_method );
+            }
+            if ( $pickup_cod_date ) {
+                $order->update_meta_data( '_pickup_cod_date', $pickup_cod_date );
+            }
+            if ( $pickup_cod_time ) {
+                $order->update_meta_data( '_pickup_cod_time', $pickup_cod_time );
+            }
+            if ( $receipt_notes ) {
+                $order->update_meta_data( '_receipt_notes', $receipt_notes );
+            }
+
+            // Handle receipt file uploads
+            $receipts = array();
+            if ( ! empty( $_FILES['receipt_files']['name'][0] ) ) {
+                $upload_dir    = WP_CONTENT_DIR . '/uploads/private-receipts/';
+                $allowed_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf' );
+                $max_size      = 5 * 1024 * 1024;
+
+                // Ensure directory exists
+                if ( ! file_exists( $upload_dir ) ) {
+                    wp_mkdir_p( $upload_dir );
+                }
+                $thumb_dir = $upload_dir . 'thumbnails/';
+                if ( ! file_exists( $thumb_dir ) ) {
+                    wp_mkdir_p( $thumb_dir );
+                }
+
+                $files = $_FILES['receipt_files'];
+
+                for ( $i = 0; $i < count( $files['name'] ); $i++ ) {
+                    if ( empty( $files['name'][ $i ] ) || $files['error'][ $i ] !== UPLOAD_ERR_OK ) {
+                        continue;
+                    }
+                    if ( ! in_array( $files['type'][ $i ], $allowed_types, true ) ) {
+                        continue;
+                    }
+                    if ( $files['size'][ $i ] > $max_size ) {
+                        continue;
+                    }
+
+                    $ext          = strtolower( pathinfo( $files['name'][ $i ], PATHINFO_EXTENSION ) );
+                    $new_filename = 'receipt_' . $order->get_id() . '_' . time() . '_' . $i . '.' . $ext;
+                    $upload_path  = $upload_dir . $new_filename;
+
+                    if ( move_uploaded_file( $files['tmp_name'][ $i ], $upload_path ) ) {
+                        $receipt_data = array(
+                            'file'     => $new_filename,
+                            'name'     => sanitize_file_name( $files['name'][ $i ] ),
+                            'thumb'    => '',
+                            'uploaded' => current_time( 'mysql' ),
+                        );
+
+                        // Generate thumbnail for images
+                        if ( in_array( $ext, array( 'jpg', 'jpeg', 'png', 'gif', 'webp' ), true ) ) {
+                            $thumb_filename = 'thumb_' . $new_filename;
+                            $thumb_path     = $thumb_dir . $thumb_filename;
+                            $image_editor   = wp_get_image_editor( $upload_path );
+
+                            if ( ! is_wp_error( $image_editor ) ) {
+                                $image_editor->resize( 300, 300, false );
+                                $result = $image_editor->save( $thumb_path );
+                                if ( ! is_wp_error( $result ) ) {
+                                    $receipt_data['thumb'] = $thumb_filename;
+                                }
+                            }
+                        }
+
+                        $receipts[] = $receipt_data;
+                    }
+                }
+
+                if ( ! empty( $receipts ) ) {
+                    $order->update_meta_data( '_payment_receipts', wp_json_encode( $receipts ) );
+                }
+            }
 
             // Add order note
             $order->add_order_note(
@@ -561,7 +657,7 @@ class ABOX_Admin_Create_Order {
                                 $attr_value = $term->name;
                             }
                         }
-                        $attr_parts[] = $attr_name . ': ' . $attr_value;
+                        $attr_parts[] = ucfirst( $attr_value );
                     }
                     $variation_attrs = implode( ', ', $attr_parts );
                     $price           = (float) $variation->get_price();

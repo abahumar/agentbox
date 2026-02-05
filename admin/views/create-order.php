@@ -78,6 +78,80 @@ $default_country = WC()->countries->get_base_country();
                     </div>
                 </div>
 
+                <!-- Payment & Collection -->
+                <div class="abox-admin-panel">
+                    <h3><?php esc_html_e( 'Payment & Collection', 'agent-box-orders' ); ?></h3>
+                    <div class="abox-panel-content">
+                        <div class="abox-form-row">
+                            <label for="abox-payment-status"><?php esc_html_e( 'Payment Status', 'agent-box-orders' ); ?></label>
+                            <select id="abox-payment-status" name="payment_status" style="width:100%;">
+                                <option value=""><?php esc_html_e( '— Select —', 'agent-box-orders' ); ?></option>
+                                <option value="done"><?php esc_html_e( 'Done Payment', 'agent-box-orders' ); ?></option>
+                                <option value="cash_cashier"><?php esc_html_e( 'Cash di Cashier', 'agent-box-orders' ); ?></option>
+                                <option value="cod"><?php esc_html_e( 'Cash on Delivery (COD)', 'agent-box-orders' ); ?></option>
+                                <option value="partial"><?php esc_html_e( 'Partial Payment', 'agent-box-orders' ); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="abox-form-row">
+                            <label for="abox-collection-method"><?php esc_html_e( 'Collection Method', 'agent-box-orders' ); ?></label>
+                            <select id="abox-collection-method" name="collection_method" style="width:100%;">
+                                <option value=""><?php esc_html_e( '— Select —', 'agent-box-orders' ); ?></option>
+                                <option value="postage"><?php esc_html_e( 'Postage', 'agent-box-orders' ); ?></option>
+                                <option value="pickup"><?php esc_html_e( 'Pickup', 'agent-box-orders' ); ?></option>
+                                <option value="runner"><?php esc_html_e( 'Runner Delivered', 'agent-box-orders' ); ?></option>
+                            </select>
+                        </div>
+
+                        <hr style="margin: 15px 0; border-top: 1px solid #ddd;">
+
+                        <p class="abox-form-row" style="margin-bottom: 8px;">
+                            <strong><?php esc_html_e( 'For Pickup/COD Only', 'agent-box-orders' ); ?></strong>
+                        </p>
+
+                        <div class="abox-form-row">
+                            <label for="abox-pickup-cod-date"><?php esc_html_e( 'Date', 'agent-box-orders' ); ?></label>
+                            <input type="date" id="abox-pickup-cod-date" name="pickup_cod_date" style="width:100%;">
+                        </div>
+
+                        <div class="abox-form-row">
+                            <label for="abox-pickup-cod-time"><?php esc_html_e( 'Time', 'agent-box-orders' ); ?></label>
+                            <input type="time" id="abox-pickup-cod-time" name="pickup_cod_time" style="width:100%;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Receipts -->
+                <div class="abox-admin-panel">
+                    <h3><?php esc_html_e( 'Payment Receipts', 'agent-box-orders' ); ?></h3>
+                    <div class="abox-panel-content">
+                        <div class="abox-receipt-upload-area" style="border: 2px dashed #ccc; padding: 20px; text-align: center; border-radius: 4px; margin-bottom: 10px; cursor: pointer; transition: border-color 0.2s;">
+                            <span class="dashicons dashicons-upload" style="font-size: 32px; width: 32px; height: 32px; color: #999;"></span>
+                            <p style="margin: 10px 0 0; color: #666; font-size: 12px;"><?php esc_html_e( 'JPG, PNG, PDF (Max 5MB each)', 'agent-box-orders' ); ?></p>
+                        </div>
+
+                        <input type="file" name="receipt_files[]" id="abox-receipt-files" accept=".jpg,.jpeg,.png,.gif,.webp,.pdf" multiple style="display: none;">
+
+                        <p>
+                            <button type="button" class="button abox-select-receipt-btn" style="width: 100%;">
+                                <?php esc_html_e( 'Select Receipt Files', 'agent-box-orders' ); ?>
+                            </button>
+                        </p>
+
+                        <div class="abox-selected-files-list" style="display: none; margin-top: 10px; padding: 10px; background: #e7f7ed; border-radius: 4px;">
+                            <p style="margin: 0 0 5px; font-weight: bold; font-size: 12px; color: #00a32a;"><?php esc_html_e( 'Files to upload:', 'agent-box-orders' ); ?></p>
+                            <ul style="margin: 0; padding-left: 20px; font-size: 12px;"></ul>
+                        </div>
+
+                        <hr style="margin: 15px 0;">
+
+                        <div class="abox-form-row">
+                            <label for="abox-receipt-notes"><strong><?php esc_html_e( 'Account Team Notes:', 'agent-box-orders' ); ?></strong></label>
+                            <textarea id="abox-receipt-notes" name="receipt_notes" rows="3" style="width: 100%;"></textarea>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Customer Section -->
                 <div class="abox-admin-panel">
                     <h3><?php esc_html_e( 'Customer', 'agent-box-orders' ); ?></h3>

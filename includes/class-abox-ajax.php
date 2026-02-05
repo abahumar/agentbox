@@ -164,7 +164,7 @@ class ABOX_Ajax {
                             $attr_value = $term->name;
                         }
                     }
-                    $attribute_parts[] = $attr_name . ': ' . ucfirst( $attr_value );
+                    $attribute_parts[] = ucfirst( $attr_value );
                 } else {
                     // "Any" attribute - get from variation_data if available
                     if ( isset( $variation_data['attributes'][ $attr_key ] ) && $variation_data['attributes'][ $attr_key ] ) {
@@ -175,7 +175,7 @@ class ABOX_Ajax {
                                 $val = $term->name;
                             }
                         }
-                        $attribute_parts[] = $attr_name . ': ' . ucfirst( $val );
+                        $attribute_parts[] = ucfirst( $val );
                     }
                 }
             }
@@ -420,7 +420,7 @@ class ABOX_Ajax {
                                 $attr_value = $term->name;
                             }
                         }
-                        $attr_parts[] = $attr_name . ': ' . $attr_value;
+                        $attr_parts[] = ucfirst( $attr_value );
                     }
                     $variation_attrs = implode( ', ', $attr_parts );
                     $price           = (float) $variation->get_price();

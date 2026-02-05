@@ -19,6 +19,7 @@ class ABOX_Meta_Box {
      */
     public function __construct() {
         add_action( 'add_meta_boxes', array( $this, 'add_meta_boxes' ), 25, 2 );
+        add_action( 'au_pdf_invoice_meta_box_after_content', array( $this, 'render_print_buttons_in_pdf_metabox' ) );
     }
 
     /**
@@ -98,6 +99,40 @@ class ABOX_Meta_Box {
         }
 
         return null;
+    }
+
+    /**
+     * Render print buttons inside the PDF Documents metabox
+     *
+     * @param WC_Order $order Order object.
+     */
+    public function render_print_buttons_in_pdf_metabox( $order ) {
+        if ( ! $order instanceof WC_Order ) {
+            return;
+        }
+
+        $is_box_order = $order->get_meta( '_abox_is_box_order' );
+
+        if ( 'yes' !== $is_box_order ) {
+            return;
+        }
+
+        ?>
+        <hr style="margin: 12px 0;" />
+        <p><strong><?php esc_html_e( 'Box Order', 'agent-box-orders' ); ?></strong></p>
+        <p>
+            <a href="<?php echo esc_url( ABOX_Admin::get_print_url( $order->get_id() ) ); ?>" target="_blank" class="button">
+                <span class="dashicons dashicons-printer" style="vertical-align: middle; margin-right: 2px;"></span>
+                <?php esc_html_e( 'Print Packing List', 'agent-box-orders' ); ?>
+            </a>
+        </p>
+        <p>
+            <a href="<?php echo esc_url( ABOX_Admin::get_collecting_list_url( $order->get_id() ) ); ?>" target="_blank" class="button">
+                <span class="dashicons dashicons-list-view" style="vertical-align: middle; margin-right: 2px;"></span>
+                <?php esc_html_e( 'Collecting List', 'agent-box-orders' ); ?>
+            </a>
+        </p>
+        <?php
     }
 
     /**

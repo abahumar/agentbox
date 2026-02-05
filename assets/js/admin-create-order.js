@@ -12,6 +12,7 @@
          */
         init: function() {
             this.initCustomerSelect();
+            this.initReceiptUpload();
             this.bindEvents();
             this.addBox();
             this.updateSummary();
@@ -56,6 +57,85 @@
                     $('#abox-guest-billing').slideUp();
                 } else {
                     $('#abox-guest-billing').slideDown();
+                }
+            });
+        },
+
+        /**
+         * Initialize receipt upload UI
+         */
+        initReceiptUpload: function() {
+            var self = this;
+
+            // File select button
+            $(document).on('click', '.abox-select-receipt-btn', function(e) {
+                e.preventDefault();
+                $('#abox-receipt-files').click();
+            });
+
+            // Click on upload area
+            $(document).on('click', '.abox-receipt-upload-area', function() {
+                $('#abox-receipt-files').click();
+            });
+
+            // Drag and drop
+            $(document).on('dragover', '.abox-receipt-upload-area', function(e) {
+                e.preventDefault();
+                $(this).css('border-color', '#0073aa');
+            }).on('dragleave', '.abox-receipt-upload-area', function(e) {
+                e.preventDefault();
+                $(this).css('border-color', '#ccc');
+            }).on('drop', '.abox-receipt-upload-area', function(e) {
+                e.preventDefault();
+                $(this).css('border-color', '#ccc');
+                var files = e.originalEvent.dataTransfer.files;
+                if (files.length) {
+                    $('#abox-receipt-files')[0].files = files;
+                    $('#abox-receipt-files').trigger('change');
+                }
+            });
+
+            // Files selected
+            $(document).on('change', '#abox-receipt-files', function() {
+                var files = this.files;
+                var $list = $('.abox-selected-files-list');
+                var $ul = $list.find('ul');
+                $ul.empty();
+
+                if (files.length) {
+                    var maxSize = 5 * 1024 * 1024;
+                    var allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf'];
+                    var validFiles = [];
+                    var errors = [];
+
+                    for (var i = 0; i < files.length; i++) {
+                        var file = files[i];
+                        if (file.size > maxSize) {
+                            errors.push(file.name + ' - exceeds 5MB');
+                            continue;
+                        }
+                        if (!allowedTypes.includes(file.type)) {
+                            errors.push(file.name + ' - invalid file type');
+                            continue;
+                        }
+                        validFiles.push(file.name);
+                    }
+
+                    if (errors.length) {
+                        alert('Some files were rejected:\n' + errors.join('\n'));
+                    }
+
+                    if (validFiles.length) {
+                        validFiles.forEach(function(name) {
+                            $ul.append('<li>' + self.escapeHtml(name) + '</li>');
+                        });
+                        $list.show();
+                    } else {
+                        $list.hide();
+                        $(this).val('');
+                    }
+                } else {
+                    $list.hide();
                 }
             });
         },
@@ -604,17 +684,44 @@
                 }
             });
 
+            // Use FormData to support file uploads
+            var formData = new FormData();
+            formData.append('action', 'abox_admin_create_order');
+            formData.append('nonce', abox_admin_vars.nonce);
+            formData.append('customer_id', $('#abox-customer-select').val() || 0);
+            formData.append('order_status', $('#abox-order-status').val());
+
+            // Append boxes as JSON
+            formData.append('boxes_json', JSON.stringify(boxes));
+
+            // Append billing
+            $.each(billing, function(key, val) {
+                formData.append('billing[' + key + ']', val);
+            });
+
+            // Payment & Collection fields
+            formData.append('payment_status', $('#abox-payment-status').val());
+            formData.append('collection_method', $('#abox-collection-method').val());
+            formData.append('pickup_cod_date', $('#abox-pickup-cod-date').val());
+            formData.append('pickup_cod_time', $('#abox-pickup-cod-time').val());
+
+            // Receipt notes
+            formData.append('receipt_notes', $('#abox-receipt-notes').val());
+
+            // Append receipt files
+            var receiptFiles = $('#abox-receipt-files')[0].files;
+            if (receiptFiles.length) {
+                for (var i = 0; i < receiptFiles.length; i++) {
+                    formData.append('receipt_files[]', receiptFiles[i]);
+                }
+            }
+
             $.ajax({
                 url: abox_admin_vars.ajax_url,
                 type: 'POST',
-                data: {
-                    action: 'abox_admin_create_order',
-                    nonce: abox_admin_vars.nonce,
-                    boxes: boxes,
-                    customer_id: $('#abox-customer-select').val() || 0,
-                    order_status: $('#abox-order-status').val(),
-                    billing: billing
-                },
+                data: formData,
+                processData: false,
+                contentType: false,
                 beforeSend: function() {
                     $submitBtn.prop('disabled', true).text(abox_admin_vars.i18n.creating_order);
                     self.hideMessage();

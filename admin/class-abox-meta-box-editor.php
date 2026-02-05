@@ -312,7 +312,7 @@ class ABOX_Meta_Box_Editor {
                         $attr_value = $term->name;
                     }
                 }
-                $attr_parts[] = $attr_name . ': ' . ucfirst( $attr_value );
+                $attr_parts[] = ucfirst( $attr_value );
             }
         }
 
@@ -599,7 +599,7 @@ class ABOX_Meta_Box_Editor {
                             $attr_value = $term->name;
                         }
                     }
-                    $attribute_parts[] = $attr_name . ': ' . ucfirst( $attr_value );
+                    $attribute_parts[] = ucfirst( $attr_value );
                 }
             }
 
