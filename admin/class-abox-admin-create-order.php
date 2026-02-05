@@ -472,17 +472,6 @@ class ABOX_Admin_Create_Order {
         foreach ( $boxes as $index => $box ) {
             $label = isset( $box['label'] ) ? sanitize_text_field( wp_unslash( $box['label'] ) ) : '';
 
-            if ( empty( $label ) ) {
-                return new WP_Error(
-                    'missing_label',
-                    sprintf(
-                        /* translators: %d: box number */
-                        __( 'Box %d is missing a customer label.', 'agent-box-orders' ),
-                        $index + 1
-                    )
-                );
-            }
-
             $items = isset( $box['items'] ) ? $box['items'] : array();
 
             if ( empty( $items ) || ! is_array( $items ) ) {

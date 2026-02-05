@@ -180,8 +180,8 @@ $default_country = WC()->countries->get_base_country();
 
         <div class="inside">
             <div class="abox-form-row">
-                <label><?php esc_html_e( 'Customer Label', 'agent-box-orders' ); ?> <span class="required">*</span></label>
-                <input type="text" class="abox-customer-label regular-text" placeholder="<?php esc_attr_e( 'e.g., John Doe, Customer #123', 'agent-box-orders' ); ?>" required>
+                <label><?php esc_html_e( 'Customer Label', 'agent-box-orders' ); ?></label>
+                <input type="text" class="abox-customer-label regular-text" placeholder="<?php esc_attr_e( 'e.g., John Doe, Customer #123', 'agent-box-orders' ); ?>">
             </div>
 
             <table class="abox-items-table widefat">

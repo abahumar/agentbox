@@ -226,10 +226,6 @@ class ABOX_Meta_Box_Editor {
         foreach ( $boxes as $box ) {
             $label = isset( $box['label'] ) ? sanitize_text_field( wp_unslash( $box['label'] ) ) : '';
 
-            if ( empty( $label ) ) {
-                return new WP_Error( 'empty_label', __( 'All boxes must have a customer label.', 'agent-box-orders' ) );
-            }
-
             $items = isset( $box['items'] ) ? $box['items'] : array();
 
             if ( empty( $items ) || ! is_array( $items ) ) {

@@ -286,11 +286,6 @@
             }
 
             for (var i = 0; i < boxes.length; i++) {
-                if (!boxes[i].label.trim()) {
-                    alert(aboxEditorData.i18n.emptyLabel);
-                    return false;
-                }
-
                 if (boxes[i].items.length === 0) {
                     alert(aboxEditorData.i18n.emptyBox.replace('%s', boxes[i].label));
                     return false;

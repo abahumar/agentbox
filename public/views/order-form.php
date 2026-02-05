@@ -79,12 +79,11 @@ $current_user = wp_get_current_user();
 
         <div class="abox-box-content">
             <div class="abox-label-row">
-                <label for="abox-label-{{index}}"><?php esc_html_e( 'Customer Label', 'agent-box-orders' ); ?> <span class="required">*</span></label>
+                <label for="abox-label-{{index}}"><?php esc_html_e( 'Customer Label', 'agent-box-orders' ); ?></label>
                 <input type="text"
                        id="abox-label-{{index}}"
                        class="abox-customer-label"
-                       placeholder="<?php esc_attr_e( 'e.g., John Doe, Customer #123', 'agent-box-orders' ); ?>"
-                       required>
+                       placeholder="<?php esc_attr_e( 'e.g., John Doe, Customer #123', 'agent-box-orders' ); ?>">
             </div>
 
             <div class="abox-items-section">

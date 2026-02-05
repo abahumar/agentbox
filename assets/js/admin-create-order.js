@@ -546,10 +546,6 @@
             }
 
             for (let i = 0; i < boxes.length; i++) {
-                if (!boxes[i].label) {
-                    return { valid: false, message: abox_admin_vars.i18n.error_empty_label };
-                }
-
                 if (boxes[i].items.length === 0) {
                     return { valid: false, message: abox_admin_vars.i18n.error_no_items };
                 }
