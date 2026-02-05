@@ -293,8 +293,14 @@
 }
 
 .abox-admin-create-order .abox-col-price,
-.abox-admin-create-order .abox-col-subtotal {
-    width: 100px;
+.abox-admin-create-order .abox-col-subtotal,
+.abox-admin-create-order .abox-items-table th.abox-col-price,
+.abox-admin-create-order .abox-items-table th.abox-col-subtotal {
+    width: 120px;
+    text-align: right;
+}
+
+.abox-admin-create-order .abox-box-total-value {
     text-align: right;
 }
 

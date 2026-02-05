@@ -312,19 +312,12 @@
                             let options = '<option value="">' + (abox_vars.i18n.select_variation || 'Select variation...') + '</option>';
 
                             response.data.variations.forEach(function(variation) {
-                                // Format price as plain text for dropdown label
-                                const formattedPrice = self.formatPrice(variation.price);
-                                // Build label with attributes if available
-                                // Escape attributes but not the price (which uses currency symbol)
                                 const escapedAttrs = variation.attributes ? self.escapeHtml(variation.attributes) : '';
-                                const label = escapedAttrs
-                                    ? escapedAttrs + ' - ' + formattedPrice
-                                    : formattedPrice;
+                                const label = escapedAttrs || self.formatPrice(variation.price);
                                 options += '<option value="' + variation.variation_id + '" ' +
                                     'data-price="' + variation.price + '" ' +
-                                    'data-price-html="' + self.escapeHtml(variation.price_html) + '" ' +
-                                    'data-max-qty="' + (variation.max_qty || 999) + '" ' +
-                                    'data-sku="' + self.escapeHtml(variation.sku || '') + '">' +
+                                    'data-price-html="' + self.escapeAttr(variation.price_html) + '" ' +
+                                    'data-max-qty="' + (variation.max_qty || 999) + '">' +
                                     label +
                                     '</option>';
                             });
@@ -347,7 +340,7 @@
                 $row.find('.abox-variation-select-wrapper').hide();
                 $row.find('.abox-variation-id').val('');
                 $row.find('.abox-product-price').val(productData.price);
-                $row.find('.abox-price-display').html(productData.priceHtml);
+                $row.find('.abox-price-display').html(this.formatPrice(productData.price));
 
                 // Update quantity max based on stock
                 if (productData.maxQty) {
@@ -383,12 +376,11 @@
             }
 
             const price = $option.data('price');
-            const priceHtml = $option.data('priceHtml');
             const maxQty = $option.data('maxQty');
 
             $row.find('.abox-variation-id').val(variationId);
             $row.find('.abox-product-price').val(price);
-            $row.find('.abox-price-display').html(priceHtml);
+            $row.find('.abox-price-display').html(this.formatPrice(price));
 
             // Update quantity max based on variation stock
             if (maxQty) {
@@ -630,31 +622,19 @@
          */
         getSearchResultTemplate: function(product) {
             const imageHtml = product.image
-                ? '<img src="' + this.escapeHtml(product.image) + '" alt="">'
-                : '';
-
-            const skuHtml = product.sku
-                ? '<span class="abox-result-sku">SKU: ' + this.escapeHtml(product.sku) + '</span>'
-                : '';
-
-            // Add variable product indicator
-            const typeIndicator = product.type === 'variable'
-                ? '<span class="abox-result-type">' + (abox_vars.i18n.variable_product || 'Variable') + '</span>'
+                ? '<img src="' + this.escapeAttr(product.image) + '" alt="">'
                 : '';
 
             return '<div class="abox-search-result" ' +
                 'data-id="' + product.id + '" ' +
-                'data-name="' + this.escapeHtml(product.name) + '" ' +
+                'data-name="' + this.escapeAttr(product.name) + '" ' +
                 'data-price="' + product.price + '" ' +
-                'data-price-html="' + this.escapeHtml(product.price_html) + '" ' +
+                'data-price-html="' + this.escapeAttr(product.price_html) + '" ' +
                 'data-max-qty="' + (product.max_qty || 999) + '" ' +
                 'data-type="' + (product.type || 'simple') + '">' +
                 imageHtml +
                 '<div class="abox-result-info">' +
                 '<span class="abox-result-name">' + this.escapeHtml(product.name) + '</span>' +
-                typeIndicator +
-                skuHtml +
-                '<span class="abox-result-price">' + product.price_html + '</span>' +
                 '</div>' +
                 '</div>';
         },
@@ -683,13 +663,26 @@
         },
 
         /**
-         * Escape HTML
+         * Escape HTML for text content
          */
         escapeHtml: function(str) {
             if (!str) return '';
             const div = document.createElement('div');
             div.textContent = str;
             return div.innerHTML;
+        },
+
+        /**
+         * Escape string for use in HTML attributes
+         */
+        escapeAttr: function(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
         }
     };
 
