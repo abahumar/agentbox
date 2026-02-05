@@ -538,21 +538,143 @@
 }
 
 @media screen and (max-width: 782px) {
-    .abox-admin-create-order .abox-items-table th,
-    .abox-admin-create-order .abox-items-table td {
-        padding: 6px 4px;
+    /* Hide table header on mobile */
+    .abox-admin-create-order .abox-items-table thead {
+        display: none;
     }
 
+    /* Stack each item row vertically like frontend */
+    .abox-admin-create-order .abox-items-table tbody tr.abox-item-row {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 15px 10px;
+        border-bottom: 1px solid #f0f0f1;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody tr.abox-item-row:last-child {
+        border-bottom: none;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody tr.abox-item-row td {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: none;
+        text-align: left;
+    }
+
+    /* Product search full width */
     .abox-admin-create-order .abox-col-product {
+        width: 100%;
+    }
+
+    /* Qty, Price, Subtotal: show label::before and lay out as flex row */
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-qty,
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-price,
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-subtotal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        text-align: right;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-qty::before {
+        content: 'Qty:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-price {
+        display: flex;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-price::before {
+        content: 'Price:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-subtotal::before {
+        content: 'Subtotal:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    .abox-admin-create-order .abox-quantity {
+        width: 80px !important;
+    }
+
+    /* Remove item button styled as circle */
+    .abox-admin-create-order .abox-items-table tbody td.abox-col-actions {
+        text-align: left;
+    }
+
+    .abox-admin-create-order .abox-remove-item {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: #2271b1;
+        color: #fff;
+    }
+
+    .abox-admin-create-order .abox-remove-item:hover {
+        background: #d63638;
+        color: #fff;
+    }
+
+    .abox-admin-create-order .abox-remove-item .dashicons {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+
+    /* Add Item button: pill style */
+    .abox-admin-create-order .abox-add-item {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #2271b1;
+        color: #fff;
+        border: none;
+        border-radius: 20px;
+        padding: 8px 18px;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    .abox-admin-create-order .abox-add-item:hover {
+        background: #135e96;
+        color: #fff;
+    }
+
+    /* Box total row stacked */
+    .abox-admin-create-order .abox-items-table tfoot tr.abox-box-total-row {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .abox-admin-create-order .abox-items-table tfoot tr.abox-box-total-row td {
+        display: inline;
+        padding: 0;
+        border: none;
         width: auto;
     }
 
-    .abox-admin-create-order .abox-col-price {
+    .abox-admin-create-order .abox-items-table tfoot tr.abox-box-total-row td:empty {
         display: none;
     }
 
-    .abox-admin-create-order .abox-items-table th.abox-col-price {
-        display: none;
+    /* Add item footer row */
+    .abox-admin-create-order .abox-items-table tfoot tr:first-child td {
+        border: none;
+        padding: 10px;
     }
 
     /* Stack product search and variation select on small screens */
@@ -564,5 +686,10 @@
     .abox-admin-create-order .abox-variation-select-wrapper {
         width: 100%;
         min-width: 100%;
+    }
+
+    /* Form row half: stack on mobile */
+    .abox-admin-create-order .abox-form-row-half {
+        flex-direction: column;
     }
 }

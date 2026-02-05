@@ -672,10 +672,6 @@
          * Get search result template
          */
         getSearchResultTemplate: function(product) {
-            const imageHtml = product.image
-                ? '<img src="' + this.escapeAttr(product.image) + '" alt="">'
-                : '<span class="abox-no-image dashicons dashicons-format-image"></span>';
-
             return '<div class="abox-search-result" ' +
                 'data-id="' + product.id + '" ' +
                 'data-name="' + this.escapeAttr(product.name) + '" ' +
@@ -683,7 +679,6 @@
                 'data-price-html="' + this.escapeAttr(product.price_html) + '" ' +
                 'data-max-qty="' + (product.max_qty || 999) + '" ' +
                 'data-type="' + (product.type || 'simple') + '">' +
-                '<div class="abox-result-image">' + imageHtml + '</div>' +
                 '<div class="abox-result-info">' +
                 '<span class="abox-result-name">' + this.escapeHtml(product.name) + '</span>' +
                 '</div>' +

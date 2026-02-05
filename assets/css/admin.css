@@ -214,4 +214,92 @@
         gap: 5px;
         text-align: center;
     }
+
+    /* Hide table header on mobile */
+    .abox-items-table thead {
+        display: none;
+    }
+
+    /* Stack each item row vertically */
+    .abox-items-table tbody tr {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        padding: 12px 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .abox-items-table tbody tr:last-child {
+        border-bottom: none;
+    }
+
+    .abox-items-table tbody td {
+        display: block;
+        width: 100%;
+        padding: 0;
+        border: none;
+        text-align: left;
+    }
+
+    /* Product name */
+    .abox-items-table tbody td.abox-col-product {
+        font-weight: 500;
+    }
+
+    /* Qty, Price, Subtotal with labels */
+    .abox-items-table tbody td.abox-col-qty,
+    .abox-items-table tbody td.abox-col-price,
+    .abox-items-table tbody td.abox-col-subtotal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .abox-items-table tbody td.abox-col-qty::before {
+        content: 'Qty:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    .abox-items-table tbody td.abox-col-price::before {
+        content: 'Price:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    .abox-items-table tbody td.abox-col-subtotal::before {
+        content: 'Subtotal:';
+        font-weight: 600;
+        color: #1d2327;
+    }
+
+    /* Box total in footer */
+    .abox-items-table tfoot tr {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+    }
+
+    .abox-items-table tfoot th {
+        display: inline;
+        padding: 0;
+        border: none;
+        width: auto;
+    }
+
+    .abox-items-table tfoot th[colspan] {
+        display: inline;
+    }
+
+    /* Actions row */
+    .abox-actions {
+        flex-direction: column;
+    }
+
+    .abox-actions .button {
+        width: 100%;
+        justify-content: center;
+    }
 }
