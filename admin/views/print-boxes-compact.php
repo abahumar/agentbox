@@ -203,7 +203,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
         }
 
         .items-table .col-variation {
-            width: 150px;
+            width: 200px;
         }
 
         .items-table .col-qty {

@@ -188,7 +188,7 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
         }
 
         .items-table .col-variation {
-            width: 150px;
+            width: 200px;
         }
 
         .items-table .col-qty {
