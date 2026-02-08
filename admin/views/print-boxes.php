@@ -16,6 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 $order_number   = $order->get_order_number();
 $order_date     = $order->get_date_created()->date_i18n( get_option( 'date_format' ) );
 $customer_name  = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
+$collection_method = ABOX_Admin::get_collection_method_label( $order->get_meta( '_collection_method' ) );
 
 /**
  * Helper function to get variation attributes string (values only, no attribute names)
@@ -267,6 +268,12 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
                 <strong><?php esc_html_e( 'Customer:', 'agent-box-orders' ); ?></strong>
                 <span><?php echo esc_html( $customer_name ); ?></span>
             </div>
+            <?php if ( $collection_method ) : ?>
+                <div class="order-info-item">
+                    <strong><?php esc_html_e( 'Collection:', 'agent-box-orders' ); ?></strong>
+                    <span><?php echo esc_html( $collection_method ); ?></span>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 

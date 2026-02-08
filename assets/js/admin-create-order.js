@@ -50,13 +50,14 @@
                 allowClear: true
             });
 
-            // Toggle guest billing fields
+            // Fetch and populate billing when customer is selected
             $('#abox-customer-select').on('change', function() {
                 const customerId = $(this).val();
                 if (customerId && customerId !== '0') {
-                    $('#abox-guest-billing').slideUp();
+                    self.fetchCustomerDetails(customerId);
                 } else {
-                    $('#abox-guest-billing').slideDown();
+                    self.clearBillingFields();
+                    self.clearShippingFields();
                 }
             });
         },
@@ -246,6 +247,15 @@
                     }
                 } else if (e.keyCode === 27) { // Escape
                     $results.hide();
+                }
+            });
+
+            // Ship to different address toggle
+            $(document).on('change', '#abox-ship-different', function() {
+                if ($(this).is(':checked')) {
+                    $('#abox-shipping-fields').slideDown();
+                } else {
+                    $('#abox-shipping-fields').slideUp();
                 }
             });
 
@@ -579,6 +589,68 @@
         },
 
         /**
+         * Fetch customer billing/shipping details via AJAX
+         */
+        fetchCustomerDetails: function(customerId) {
+            var self = this;
+
+            $.ajax({
+                url: abox_admin_vars.ajax_url,
+                type: 'POST',
+                data: {
+                    action: 'abox_admin_get_customer_details',
+                    nonce: abox_admin_vars.nonce,
+                    customer_id: customerId
+                },
+                success: function(response) {
+                    if (response.success) {
+                        var b = response.data.billing;
+                        $('#abox-billing-first-name').val(b.first_name || '');
+                        $('#abox-billing-last-name').val(b.last_name || '');
+                        $('#abox-billing-email').val(b.email || '');
+                        $('#abox-billing-phone').val(b.phone || '');
+                        $('#abox-billing-address-1').val(b.address_1 || '');
+                        $('#abox-billing-address-2').val(b.address_2 || '');
+                        $('#abox-billing-city').val(b.city || '');
+                        $('#abox-billing-state').val(b.state || '');
+                        $('#abox-billing-postcode').val(b.postcode || '');
+                        $('#abox-billing-country').val(b.country || '');
+
+                        var s = response.data.shipping;
+                        $('#abox-shipping-first-name').val(s.first_name || '');
+                        $('#abox-shipping-last-name').val(s.last_name || '');
+                        $('#abox-shipping-address-1').val(s.address_1 || '');
+                        $('#abox-shipping-address-2').val(s.address_2 || '');
+                        $('#abox-shipping-city').val(s.city || '');
+                        $('#abox-shipping-state').val(s.state || '');
+                        $('#abox-shipping-postcode').val(s.postcode || '');
+                        $('#abox-shipping-country').val(s.country || '');
+                    }
+                }
+            });
+        },
+
+        /**
+         * Clear billing fields
+         */
+        clearBillingFields: function() {
+            $('#abox-billing-first-name, #abox-billing-last-name, #abox-billing-email, #abox-billing-phone').val('');
+            $('#abox-billing-address-1, #abox-billing-address-2, #abox-billing-city, #abox-billing-state, #abox-billing-postcode').val('');
+            $('#abox-billing-country').val('');
+        },
+
+        /**
+         * Clear shipping fields
+         */
+        clearShippingFields: function() {
+            $('#abox-shipping-first-name, #abox-shipping-last-name').val('');
+            $('#abox-shipping-address-1, #abox-shipping-address-2, #abox-shipping-city, #abox-shipping-state, #abox-shipping-postcode').val('');
+            $('#abox-shipping-country').val('');
+            $('#abox-ship-different').prop('checked', false);
+            $('#abox-shipping-fields').hide();
+        },
+
+        /**
          * Collect form data
          */
         collectFormData: function() {
@@ -676,13 +748,26 @@
 
             // Collect billing data
             const billing = {};
-            $('#abox-guest-billing input, #abox-guest-billing select').each(function() {
+            $('#abox-billing-details input, #abox-billing-details select').each(function() {
                 const name = $(this).attr('name');
-                if (name) {
+                if (name && name.indexOf('billing[') === 0) {
                     const key = name.replace('billing[', '').replace(']', '');
                     billing[key] = $(this).val();
                 }
             });
+
+            // Collect shipping data
+            const shipping = {};
+            const shipDifferent = $('#abox-ship-different').is(':checked');
+            if (shipDifferent) {
+                $('#abox-shipping-fields input, #abox-shipping-fields select').each(function() {
+                    const name = $(this).attr('name');
+                    if (name && name.indexOf('shipping[') === 0) {
+                        const key = name.replace('shipping[', '').replace(']', '');
+                        shipping[key] = $(this).val();
+                    }
+                });
+            }
 
             // Use FormData to support file uploads
             var formData = new FormData();
@@ -698,6 +783,14 @@
             $.each(billing, function(key, val) {
                 formData.append('billing[' + key + ']', val);
             });
+
+            // Append shipping
+            if (shipDifferent) {
+                formData.append('ship_to_different', '1');
+                $.each(shipping, function(key, val) {
+                    formData.append('shipping[' + key + ']', val);
+                });
+            }
 
             // Payment & Collection fields
             formData.append('payment_status', $('#abox-payment-status').val());

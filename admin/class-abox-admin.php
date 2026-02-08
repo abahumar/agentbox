@@ -217,6 +217,35 @@ class ABOX_Admin {
     }
 
     /**
+     * Get the human-friendly label for a collection method value.
+     * Includes support for legacy values to keep older orders readable.
+     *
+     * @param string $method Stored collection method key.
+     * @return string
+     */
+    public static function get_collection_method_label( $method ) {
+        if ( empty( $method ) ) {
+            return '';
+        }
+
+        $map = array(
+            'postage'            => __( 'Postage', 'agent-box-orders' ),
+            'pickup_hq'          => __( 'Pickup - HQ', 'agent-box-orders' ),
+            'pickup_terengganu'  => __( 'Pickup - Terengganu', 'agent-box-orders' ),
+            'runner_delivered'   => __( 'Runner Delivered', 'agent-box-orders' ),
+            // Legacy values kept for backward compatibility.
+            'pickup'             => __( 'Pickup', 'agent-box-orders' ),
+            'runner'             => __( 'Runner Delivered', 'agent-box-orders' ),
+        );
+
+        if ( isset( $map[ $method ] ) ) {
+            return $map[ $method ];
+        }
+
+        return ucwords( str_replace( array( '_', '-' ), ' ', $method ) );
+    }
+
+    /**
      * Render collecting list view (consolidated items from all boxes)
      */
     public function collecting_list_view() {

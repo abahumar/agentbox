@@ -26,6 +26,7 @@ class ABOX_Admin_Create_Order {
         add_action( 'wp_ajax_abox_admin_create_order', array( $this, 'create_order' ) );
         add_action( 'wp_ajax_abox_admin_search_products', array( $this, 'search_products' ) );
         add_action( 'wp_ajax_abox_admin_get_variations', array( $this, 'get_variations' ) );
+        add_action( 'wp_ajax_abox_admin_get_customer_details', array( $this, 'get_customer_details' ) );
     }
 
     /**
@@ -167,6 +168,54 @@ class ABOX_Admin_Create_Order {
         }
 
         wp_send_json_success( array( 'customers' => $results ) );
+    }
+
+    /**
+     * AJAX: Get customer billing/shipping details
+     */
+    public function get_customer_details() {
+        check_ajax_referer( 'abox_admin_nonce', 'nonce' );
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_send_json_error( array( 'message' => __( 'Permission denied.', 'agent-box-orders' ) ) );
+        }
+
+        $customer_id = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
+
+        if ( ! $customer_id ) {
+            wp_send_json_error( array( 'message' => __( 'Invalid customer ID.', 'agent-box-orders' ) ) );
+        }
+
+        $customer = new WC_Customer( $customer_id );
+
+        $billing = array(
+            'first_name' => $customer->get_billing_first_name() ?: $customer->get_first_name(),
+            'last_name'  => $customer->get_billing_last_name() ?: $customer->get_last_name(),
+            'email'      => $customer->get_billing_email() ?: $customer->get_email(),
+            'phone'      => $customer->get_billing_phone(),
+            'address_1'  => $customer->get_billing_address_1(),
+            'address_2'  => $customer->get_billing_address_2(),
+            'city'       => $customer->get_billing_city(),
+            'state'      => $customer->get_billing_state(),
+            'postcode'   => $customer->get_billing_postcode(),
+            'country'    => $customer->get_billing_country(),
+        );
+
+        $shipping = array(
+            'first_name' => $customer->get_shipping_first_name(),
+            'last_name'  => $customer->get_shipping_last_name(),
+            'address_1'  => $customer->get_shipping_address_1(),
+            'address_2'  => $customer->get_shipping_address_2(),
+            'city'       => $customer->get_shipping_city(),
+            'state'      => $customer->get_shipping_state(),
+            'postcode'   => $customer->get_shipping_postcode(),
+            'country'    => $customer->get_shipping_country(),
+        );
+
+        wp_send_json_success( array(
+            'billing'  => $billing,
+            'shipping' => $shipping,
+        ) );
     }
 
     /**
@@ -346,6 +395,8 @@ class ABOX_Admin_Create_Order {
         $customer_id  = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
         $order_status = isset( $_POST['order_status'] ) ? sanitize_text_field( wp_unslash( $_POST['order_status'] ) ) : 'on-hold';
         $billing      = isset( $_POST['billing'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['billing'] ) ) : array();
+        $shipping     = isset( $_POST['shipping'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['shipping'] ) ) : array();
+        $ship_different = isset( $_POST['ship_to_different'] ) && '1' === $_POST['ship_to_different'];
 
         // Payment & Collection fields
         $payment_status    = isset( $_POST['payment_status'] ) ? sanitize_text_field( wp_unslash( $_POST['payment_status'] ) ) : '';
@@ -377,32 +428,28 @@ class ABOX_Admin_Create_Order {
                 wp_send_json_error( array( 'message' => $order->get_error_message() ) );
             }
 
-            // Set billing address
-            if ( $customer_id ) {
-                // Get customer data
-                $customer = new WC_Customer( $customer_id );
-                $order->set_billing_first_name( $customer->get_billing_first_name() ?: $customer->get_first_name() );
-                $order->set_billing_last_name( $customer->get_billing_last_name() ?: $customer->get_last_name() );
-                $order->set_billing_email( $customer->get_billing_email() ?: $customer->get_email() );
-                $order->set_billing_phone( $customer->get_billing_phone() );
-                $order->set_billing_address_1( $customer->get_billing_address_1() );
-                $order->set_billing_address_2( $customer->get_billing_address_2() );
-                $order->set_billing_city( $customer->get_billing_city() );
-                $order->set_billing_state( $customer->get_billing_state() );
-                $order->set_billing_postcode( $customer->get_billing_postcode() );
-                $order->set_billing_country( $customer->get_billing_country() );
-            } else {
-                // Guest order - use provided billing details
-                $order->set_billing_first_name( isset( $billing['first_name'] ) ? $billing['first_name'] : '' );
-                $order->set_billing_last_name( isset( $billing['last_name'] ) ? $billing['last_name'] : '' );
-                $order->set_billing_email( isset( $billing['email'] ) ? sanitize_email( $billing['email'] ) : '' );
-                $order->set_billing_phone( isset( $billing['phone'] ) ? $billing['phone'] : '' );
-                $order->set_billing_address_1( isset( $billing['address_1'] ) ? $billing['address_1'] : '' );
-                $order->set_billing_address_2( isset( $billing['address_2'] ) ? $billing['address_2'] : '' );
-                $order->set_billing_city( isset( $billing['city'] ) ? $billing['city'] : '' );
-                $order->set_billing_state( isset( $billing['state'] ) ? $billing['state'] : '' );
-                $order->set_billing_postcode( isset( $billing['postcode'] ) ? $billing['postcode'] : '' );
-                $order->set_billing_country( isset( $billing['country'] ) ? $billing['country'] : '' );
+            // Set billing address from form data (works for both registered and guest)
+            $order->set_billing_first_name( isset( $billing['first_name'] ) ? $billing['first_name'] : '' );
+            $order->set_billing_last_name( isset( $billing['last_name'] ) ? $billing['last_name'] : '' );
+            $order->set_billing_email( isset( $billing['email'] ) ? sanitize_email( $billing['email'] ) : '' );
+            $order->set_billing_phone( isset( $billing['phone'] ) ? $billing['phone'] : '' );
+            $order->set_billing_address_1( isset( $billing['address_1'] ) ? $billing['address_1'] : '' );
+            $order->set_billing_address_2( isset( $billing['address_2'] ) ? $billing['address_2'] : '' );
+            $order->set_billing_city( isset( $billing['city'] ) ? $billing['city'] : '' );
+            $order->set_billing_state( isset( $billing['state'] ) ? $billing['state'] : '' );
+            $order->set_billing_postcode( isset( $billing['postcode'] ) ? $billing['postcode'] : '' );
+            $order->set_billing_country( isset( $billing['country'] ) ? $billing['country'] : '' );
+
+            // Set shipping address if "Ship to different address" is checked
+            if ( $ship_different && ! empty( $shipping ) ) {
+                $order->set_shipping_first_name( isset( $shipping['first_name'] ) ? $shipping['first_name'] : '' );
+                $order->set_shipping_last_name( isset( $shipping['last_name'] ) ? $shipping['last_name'] : '' );
+                $order->set_shipping_address_1( isset( $shipping['address_1'] ) ? $shipping['address_1'] : '' );
+                $order->set_shipping_address_2( isset( $shipping['address_2'] ) ? $shipping['address_2'] : '' );
+                $order->set_shipping_city( isset( $shipping['city'] ) ? $shipping['city'] : '' );
+                $order->set_shipping_state( isset( $shipping['state'] ) ? $shipping['state'] : '' );
+                $order->set_shipping_postcode( isset( $shipping['postcode'] ) ? $shipping['postcode'] : '' );
+                $order->set_shipping_country( isset( $shipping['country'] ) ? $shipping['country'] : '' );
             }
 
             // Add products to order
@@ -453,7 +500,8 @@ class ABOX_Admin_Create_Order {
             }
 
             // Handle receipt file uploads
-            $receipts = array();
+            $receipts               = array();
+            $uploaded_receipt_names = array();
             if ( ! empty( $_FILES['receipt_files']['name'][0] ) ) {
                 $upload_dir    = WP_CONTENT_DIR . '/uploads/private-receipts/';
                 $allowed_types = array( 'image/jpeg', 'image/png', 'image/gif', 'image/webp', 'application/pdf' );
@@ -492,6 +540,7 @@ class ABOX_Admin_Create_Order {
                             'thumb'    => '',
                             'uploaded' => current_time( 'mysql' ),
                         );
+                        $uploaded_receipt_names[] = $receipt_data['name'];
 
                         // Generate thumbnail for images
                         if ( in_array( $ext, array( 'jpg', 'jpeg', 'png', 'gif', 'webp' ), true ) ) {
@@ -515,6 +564,22 @@ class ABOX_Admin_Create_Order {
                 if ( ! empty( $receipts ) ) {
                     $order->update_meta_data( '_payment_receipts', wp_json_encode( $receipts ) );
                 }
+            }
+
+            // Add note when receipts are uploaded so the notes are visible in the order timeline.
+            if ( ! empty( $uploaded_receipt_names ) ) {
+                $note_message = sprintf(
+                    /* translators: 1: number of receipts, 2: list of receipt file names */
+                    __( 'Receipts uploaded (%1$d): %2$s', 'agent-box-orders' ),
+                    count( $uploaded_receipt_names ),
+                    implode( ', ', $uploaded_receipt_names )
+                );
+
+                if ( $receipt_notes ) {
+                    $note_message .= ' | ' . __( 'Notes:', 'agent-box-orders' ) . ' ' . $receipt_notes;
+                }
+
+                $order->add_order_note( $note_message, false, true );
             }
 
             // Add order note
