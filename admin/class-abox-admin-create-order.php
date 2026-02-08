@@ -569,9 +569,9 @@ class ABOX_Admin_Create_Order {
             // Add note when receipts are uploaded so the notes are visible in the order timeline.
             if ( ! empty( $uploaded_receipt_names ) ) {
                 $note_message = sprintf(
-                    /* translators: 1: number of receipts, 2: list of receipt file names */
-                    __( 'Receipts uploaded (%1$d): %2$s', 'agent-box-orders' ),
-                    count( $uploaded_receipt_names ),
+                    /* translators: 1: user display name, 2: list of receipt file names */
+                    __( 'Payment receipts uploaded by %1$s: %2$s', 'agent-box-orders' ),
+                    wp_get_current_user()->display_name,
                     implode( ', ', $uploaded_receipt_names )
                 );
 
