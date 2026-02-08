@@ -84,6 +84,19 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
     }
 }
 
+// Sort consolidated items by variation
+usort( $consolidated_items, function( $a, $b ) {
+    $var_a = abox_get_variation_display( $a );
+    $var_b = abox_get_variation_display( $b );
+    return strcmp( $var_a, $var_b );
+});
+
+// Split items into two columns
+$total_items  = count( $consolidated_items );
+$half         = ceil( $total_items / 2 );
+$left_items   = array_slice( $consolidated_items, 0, $half );
+$right_items  = array_slice( $consolidated_items, $half );
+
 ?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
@@ -188,7 +201,19 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
         }
 
         .items-table .col-variation {
-            width: 150px;
+            white-space: nowrap;
+            width: 1%;
+        }
+
+        .items-container {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .items-column {
+            flex: 1;
+            min-width: 0;
         }
 
         .items-table .col-qty {
@@ -220,6 +245,10 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
 
             body {
                 padding: 5px;
+            }
+
+            .items-container {
+                gap: 8px;
             }
 
             .items-table th,
@@ -269,29 +298,67 @@ if ( ! function_exists( 'abox_get_product_name' ) ) {
         </div>
     </div>
 
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th class="col-checkbox"><?php esc_html_e( '&#10003;', 'agent-box-orders' ); ?></th>
-                <th class="col-product"><?php esc_html_e( 'Product Name', 'agent-box-orders' ); ?></th>
-                <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
-                <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            $total_quantity = 0;
-            foreach ( $consolidated_items as $item ) :
-                $total_quantity += $item['quantity'];
-            ?>
-                <tr>
-                    <td class="col-checkbox"><span class="checkbox-cell"></span></td>
-                    <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
-                    <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
-                    <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
+    <?php
+    // Calculate total quantity
+    $total_quantity = 0;
+    foreach ( $consolidated_items as $item ) {
+        $total_quantity += $item['quantity'];
+    }
+    ?>
+
+    <div class="items-container">
+        <!-- Left Column -->
+        <div class="items-column">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox"><?php esc_html_e( '✓', 'agent-box-orders' ); ?></th>
+                        <th class="col-product"><?php esc_html_e( 'Product', 'agent-box-orders' ); ?></th>
+                        <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
+                        <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $left_items as $item ) : ?>
+                        <tr>
+                            <td class="col-checkbox"><span class="checkbox-cell"></span></td>
+                            <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
+                            <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
+                            <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Right Column -->
+        <?php if ( ! empty( $right_items ) ) : ?>
+        <div class="items-column">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th class="col-checkbox"><?php esc_html_e( '✓', 'agent-box-orders' ); ?></th>
+                        <th class="col-product"><?php esc_html_e( 'Product', 'agent-box-orders' ); ?></th>
+                        <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
+                        <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ( $right_items as $item ) : ?>
+                        <tr>
+                            <td class="col-checkbox"><span class="checkbox-cell"></span></td>
+                            <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
+                            <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
+                            <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+        <?php endif; ?>
+    </div>
+
+    <table class="items-table" style="margin-top: 8px;">
         <tfoot>
             <tr class="total-row">
                 <td colspan="3" style="text-align: right;">

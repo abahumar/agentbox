@@ -344,7 +344,7 @@ class ABOX_Admin_Create_Order {
             $boxes = isset( $_POST['boxes'] ) ? $_POST['boxes'] : array();
         }
         $customer_id  = isset( $_POST['customer_id'] ) ? absint( $_POST['customer_id'] ) : 0;
-        $order_status = isset( $_POST['order_status'] ) ? sanitize_text_field( wp_unslash( $_POST['order_status'] ) ) : 'pending';
+        $order_status = isset( $_POST['order_status'] ) ? sanitize_text_field( wp_unslash( $_POST['order_status'] ) ) : 'on-hold';
         $billing      = isset( $_POST['billing'] ) ? array_map( 'sanitize_text_field', wp_unslash( $_POST['billing'] ) ) : array();
 
         // Payment & Collection fields

@@ -50,7 +50,7 @@ $default_country = WC()->countries->get_base_country();
                             <label for="abox-order-status"><?php esc_html_e( 'Order Status', 'agent-box-orders' ); ?></label>
                             <select id="abox-order-status" name="order_status">
                                 <?php foreach ( $order_statuses as $status => $label ) : ?>
-                                    <option value="<?php echo esc_attr( str_replace( 'wc-', '', $status ) ); ?>" <?php selected( 'wc-processing', $status ); ?>>
+                                    <option value="<?php echo esc_attr( str_replace( 'wc-', '', $status ) ); ?>" <?php selected( 'wc-on-hold', $status ); ?>>
                                         <?php echo esc_html( $label ); ?>
                                     </option>
                                 <?php endforeach; ?>
