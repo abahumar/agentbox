@@ -451,7 +451,7 @@
                                 options += '<option value="' + variation.variation_id + '" ' +
                                     'data-price="' + variation.price + '" ' +
                                     'data-price-html="' + self.escapeAttr(variation.price_html) + '" ' +
-                                    'data-max-qty="' + (variation.max_qty || 999) + '">' +
+                                    'data-max-qty="' + (variation.max_qty || 9999) + '">' +
                                     label + '</option>';
                             });
 
@@ -873,7 +873,7 @@
                 'data-name="' + this.escapeAttr(product.name) + '" ' +
                 'data-price="' + product.price + '" ' +
                 'data-price-html="' + this.escapeAttr(product.price_html) + '" ' +
-                'data-max-qty="' + (product.max_qty || 999) + '" ' +
+                'data-max-qty="' + (product.max_qty || 9999) + '" ' +
                 'data-type="' + (product.type || 'simple') + '">' +
                 '<div class="abox-result-info">' +
                 '<span class="abox-result-name">' + this.escapeHtml(product.name) + '</span>' +

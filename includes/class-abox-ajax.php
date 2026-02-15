@@ -81,7 +81,7 @@ class ABOX_Ajax {
             }
 
             // Get max quantity (for simple products)
-            $max_qty = 999;
+            $max_qty = 9999;
             if ( 'variable' !== $product_type && $product->managing_stock() ) {
                 $stock_qty = $product->get_stock_quantity();
                 if ( $stock_qty > 0 ) {
@@ -194,7 +194,7 @@ class ABOX_Ajax {
             }
 
             // Get max quantity
-            $max_qty = 999;
+            $max_qty = 9999;
             if ( $variation->managing_stock() ) {
                 $stock_qty = $variation->get_stock_quantity();
                 if ( $stock_qty > 0 ) {

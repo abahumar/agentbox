@@ -142,7 +142,7 @@ $current_user = wp_get_current_user();
                    class="abox-quantity"
                    value="1"
                    min="1"
-                   max="999"
+                   max="9999"
                    step="1">
         </div>
         <div class="abox-col-price">

@@ -24,6 +24,148 @@ $default_country = WC()->countries->get_base_country();
         <div class="abox-admin-layout">
             <!-- Main Content -->
             <div class="abox-admin-main">
+                <!-- Customer and Shipping Section (Side by Side) -->
+                <div class="abox-customer-shipping-row">
+                    <!-- Customer Section -->
+                    <div class="abox-admin-panel abox-customer-panel">
+                        <h3><?php esc_html_e( 'Customer', 'agent-box-orders' ); ?></h3>
+                        <div class="abox-panel-content">
+                            <div class="abox-form-row">
+                                <label for="abox-customer-select"><?php esc_html_e( 'Select Customer', 'agent-box-orders' ); ?></label>
+                                <select id="abox-customer-select" name="customer_id" style="width: 100%;">
+                                    <option value="0"><?php esc_html_e( '— Guest (enter details below) —', 'agent-box-orders' ); ?></option>
+                                </select>
+                            </div>
+
+                            <div id="abox-billing-details" class="abox-billing-details">
+                                <h4><?php esc_html_e( 'Billing Details', 'agent-box-orders' ); ?></h4>
+
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-billing-first-name"><?php esc_html_e( 'First Name', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-billing-first-name" name="billing[first_name]">
+                                    </div>
+                                    <div>
+                                        <label for="abox-billing-last-name"><?php esc_html_e( 'Last Name', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-billing-last-name" name="billing[last_name]">
+                                    </div>
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <label for="abox-billing-email"><?php esc_html_e( 'Email', 'agent-box-orders' ); ?></label>
+                                    <input type="email" id="abox-billing-email" name="billing[email]">
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <label for="abox-billing-phone"><?php esc_html_e( 'Phone', 'agent-box-orders' ); ?></label>
+                                    <input type="tel" id="abox-billing-phone" name="billing[phone]">
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <label for="abox-billing-address-1"><?php esc_html_e( 'Address', 'agent-box-orders' ); ?></label>
+                                    <input type="text" id="abox-billing-address-1" name="billing[address_1]" placeholder="<?php esc_attr_e( 'Street address', 'agent-box-orders' ); ?>">
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <input type="text" id="abox-billing-address-2" name="billing[address_2]" placeholder="<?php esc_attr_e( 'Apartment, suite, etc. (optional)', 'agent-box-orders' ); ?>">
+                                </div>
+
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-billing-city"><?php esc_html_e( 'City', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-billing-city" name="billing[city]">
+                                    </div>
+                                    <div>
+                                        <label for="abox-billing-postcode"><?php esc_html_e( 'Postcode', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-billing-postcode" name="billing[postcode]">
+                                    </div>
+                                </div>
+
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-billing-country"><?php esc_html_e( 'Country', 'agent-box-orders' ); ?></label>
+                                        <select id="abox-billing-country" name="billing[country]">
+                                            <option value=""><?php esc_html_e( 'Select a country...', 'agent-box-orders' ); ?></option>
+                                            <?php foreach ( $countries as $code => $name ) : ?>
+                                                <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $default_country, $code ); ?>>
+                                                    <?php echo esc_html( $name ); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="abox-billing-state"><?php esc_html_e( 'State/Region', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-billing-state" name="billing[state]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shipping Section -->
+                    <div class="abox-admin-panel abox-shipping-panel">
+                        <h3><?php esc_html_e( 'Shipping Address', 'agent-box-orders' ); ?></h3>
+                        <div class="abox-panel-content">
+                            <div class="abox-form-row">
+                                <label class="abox-checkbox-label">
+                                    <input type="checkbox" id="abox-ship-different" name="ship_to_different" value="1">
+                                    <?php esc_html_e( 'Ship to a different address', 'agent-box-orders' ); ?>
+                                </label>
+                            </div>
+
+                            <div id="abox-shipping-fields" class="abox-shipping-fields" style="display: none;">
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-shipping-first-name"><?php esc_html_e( 'First Name', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-shipping-first-name" name="shipping[first_name]">
+                                    </div>
+                                    <div>
+                                        <label for="abox-shipping-last-name"><?php esc_html_e( 'Last Name', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-shipping-last-name" name="shipping[last_name]">
+                                    </div>
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <label for="abox-shipping-address-1"><?php esc_html_e( 'Address', 'agent-box-orders' ); ?></label>
+                                    <input type="text" id="abox-shipping-address-1" name="shipping[address_1]" placeholder="<?php esc_attr_e( 'Street address', 'agent-box-orders' ); ?>">
+                                </div>
+
+                                <div class="abox-form-row">
+                                    <input type="text" id="abox-shipping-address-2" name="shipping[address_2]" placeholder="<?php esc_attr_e( 'Apartment, suite, etc. (optional)', 'agent-box-orders' ); ?>">
+                                </div>
+
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-shipping-city"><?php esc_html_e( 'City', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-shipping-city" name="shipping[city]">
+                                    </div>
+                                    <div>
+                                        <label for="abox-shipping-postcode"><?php esc_html_e( 'Postcode', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-shipping-postcode" name="shipping[postcode]">
+                                    </div>
+                                </div>
+
+                                <div class="abox-form-row abox-form-row-half">
+                                    <div>
+                                        <label for="abox-shipping-country"><?php esc_html_e( 'Country', 'agent-box-orders' ); ?></label>
+                                        <select id="abox-shipping-country" name="shipping[country]">
+                                            <option value=""><?php esc_html_e( 'Select a country...', 'agent-box-orders' ); ?></option>
+                                            <?php foreach ( $countries as $code => $name ) : ?>
+                                                <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $default_country, $code ); ?>>
+                                                    <?php echo esc_html( $name ); ?>
+                                                </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="abox-shipping-state"><?php esc_html_e( 'State/Region', 'agent-box-orders' ); ?></label>
+                                        <input type="text" id="abox-shipping-state" name="shipping[state]">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- Boxes Section -->
                 <div class="abox-admin-section">
                     <h2><?php esc_html_e( 'Order Boxes', 'agent-box-orders' ); ?></h2>
@@ -42,42 +184,6 @@ $default_country = WC()->countries->get_base_country();
 
             <!-- Sidebar -->
             <div class="abox-admin-sidebar">
-                <!-- Order Actions -->
-                <div class="abox-admin-panel">
-                    <h3><?php esc_html_e( 'Create Order', 'agent-box-orders' ); ?></h3>
-                    <div class="abox-panel-content">
-                        <div class="abox-form-row">
-                            <label for="abox-order-status"><?php esc_html_e( 'Order Status', 'agent-box-orders' ); ?></label>
-                            <select id="abox-order-status" name="order_status">
-                                <?php foreach ( $order_statuses as $status => $label ) : ?>
-                                    <option value="<?php echo esc_attr( str_replace( 'wc-', '', $status ) ); ?>" <?php selected( 'wc-on-hold', $status ); ?>>
-                                        <?php echo esc_html( $label ); ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="abox-summary">
-                            <div class="abox-summary-row">
-                                <span><?php esc_html_e( 'Total Boxes:', 'agent-box-orders' ); ?></span>
-                                <strong id="abox-total-boxes">0</strong>
-                            </div>
-                            <div class="abox-summary-row">
-                                <span><?php esc_html_e( 'Total Items:', 'agent-box-orders' ); ?></span>
-                                <strong id="abox-total-items">0</strong>
-                            </div>
-                            <div class="abox-summary-row abox-summary-total">
-                                <span><?php esc_html_e( 'Order Total:', 'agent-box-orders' ); ?></span>
-                                <strong id="abox-grand-total"><?php echo wc_price( 0 ); ?></strong>
-                            </div>
-                        </div>
-
-                        <button type="submit" id="abox-submit-btn" class="button button-primary button-large">
-                            <?php esc_html_e( 'Create Order', 'agent-box-orders' ); ?>
-                        </button>
-                    </div>
-                </div>
-
                 <!-- Payment & Collection -->
                 <div class="abox-admin-panel">
                     <h3><?php esc_html_e( 'Payment & Collection', 'agent-box-orders' ); ?></h3>
@@ -153,143 +259,39 @@ $default_country = WC()->countries->get_base_country();
                     </div>
                 </div>
 
-                <!-- Customer Section -->
+                <!-- Order Actions -->
                 <div class="abox-admin-panel">
-                    <h3><?php esc_html_e( 'Customer', 'agent-box-orders' ); ?></h3>
+                    <h3><?php esc_html_e( 'Create Order', 'agent-box-orders' ); ?></h3>
                     <div class="abox-panel-content">
                         <div class="abox-form-row">
-                            <label for="abox-customer-select"><?php esc_html_e( 'Select Customer', 'agent-box-orders' ); ?></label>
-                            <select id="abox-customer-select" name="customer_id" style="width: 100%;">
-                                <option value="0"><?php esc_html_e( '— Guest (enter details below) —', 'agent-box-orders' ); ?></option>
+                            <label for="abox-order-status"><?php esc_html_e( 'Order Status', 'agent-box-orders' ); ?></label>
+                            <select id="abox-order-status" name="order_status">
+                                <?php foreach ( $order_statuses as $status => $label ) : ?>
+                                    <option value="<?php echo esc_attr( str_replace( 'wc-', '', $status ) ); ?>" <?php selected( 'wc-on-hold', $status ); ?>>
+                                        <?php echo esc_html( $label ); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
-                        <div id="abox-billing-details" class="abox-billing-details">
-                            <h4><?php esc_html_e( 'Billing Details', 'agent-box-orders' ); ?></h4>
-
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-billing-first-name"><?php esc_html_e( 'First Name', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-billing-first-name" name="billing[first_name]">
-                                </div>
-                                <div>
-                                    <label for="abox-billing-last-name"><?php esc_html_e( 'Last Name', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-billing-last-name" name="billing[last_name]">
-                                </div>
+                        <div class="abox-summary">
+                            <div class="abox-summary-row">
+                                <span><?php esc_html_e( 'Total Boxes:', 'agent-box-orders' ); ?></span>
+                                <strong id="abox-total-boxes">0</strong>
                             </div>
-
-                            <div class="abox-form-row">
-                                <label for="abox-billing-email"><?php esc_html_e( 'Email', 'agent-box-orders' ); ?></label>
-                                <input type="email" id="abox-billing-email" name="billing[email]">
+                            <div class="abox-summary-row">
+                                <span><?php esc_html_e( 'Total Items:', 'agent-box-orders' ); ?></span>
+                                <strong id="abox-total-items">0</strong>
                             </div>
-
-                            <div class="abox-form-row">
-                                <label for="abox-billing-phone"><?php esc_html_e( 'Phone', 'agent-box-orders' ); ?></label>
-                                <input type="tel" id="abox-billing-phone" name="billing[phone]">
-                            </div>
-
-                            <div class="abox-form-row">
-                                <label for="abox-billing-address-1"><?php esc_html_e( 'Address', 'agent-box-orders' ); ?></label>
-                                <input type="text" id="abox-billing-address-1" name="billing[address_1]" placeholder="<?php esc_attr_e( 'Street address', 'agent-box-orders' ); ?>">
-                            </div>
-
-                            <div class="abox-form-row">
-                                <input type="text" id="abox-billing-address-2" name="billing[address_2]" placeholder="<?php esc_attr_e( 'Apartment, suite, etc. (optional)', 'agent-box-orders' ); ?>">
-                            </div>
-
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-billing-city"><?php esc_html_e( 'City', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-billing-city" name="billing[city]">
-                                </div>
-                                <div>
-                                    <label for="abox-billing-postcode"><?php esc_html_e( 'Postcode', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-billing-postcode" name="billing[postcode]">
-                                </div>
-                            </div>
-
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-billing-country"><?php esc_html_e( 'Country', 'agent-box-orders' ); ?></label>
-                                    <select id="abox-billing-country" name="billing[country]">
-                                        <option value=""><?php esc_html_e( 'Select a country...', 'agent-box-orders' ); ?></option>
-                                        <?php foreach ( $countries as $code => $name ) : ?>
-                                            <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $default_country, $code ); ?>>
-                                                <?php echo esc_html( $name ); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="abox-billing-state"><?php esc_html_e( 'State/Region', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-billing-state" name="billing[state]">
-                                </div>
+                            <div class="abox-summary-row abox-summary-total">
+                                <span><?php esc_html_e( 'Order Total:', 'agent-box-orders' ); ?></span>
+                                <strong id="abox-grand-total"><?php echo wc_price( 0 ); ?></strong>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <!-- Shipping Section -->
-                <div class="abox-admin-panel">
-                    <h3><?php esc_html_e( 'Shipping Address', 'agent-box-orders' ); ?></h3>
-                    <div class="abox-panel-content">
-                        <div class="abox-form-row">
-                            <label class="abox-checkbox-label">
-                                <input type="checkbox" id="abox-ship-different" name="ship_to_different" value="1">
-                                <?php esc_html_e( 'Ship to a different address', 'agent-box-orders' ); ?>
-                            </label>
-                        </div>
-
-                        <div id="abox-shipping-fields" class="abox-shipping-fields" style="display: none;">
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-shipping-first-name"><?php esc_html_e( 'First Name', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-shipping-first-name" name="shipping[first_name]">
-                                </div>
-                                <div>
-                                    <label for="abox-shipping-last-name"><?php esc_html_e( 'Last Name', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-shipping-last-name" name="shipping[last_name]">
-                                </div>
-                            </div>
-
-                            <div class="abox-form-row">
-                                <label for="abox-shipping-address-1"><?php esc_html_e( 'Address', 'agent-box-orders' ); ?></label>
-                                <input type="text" id="abox-shipping-address-1" name="shipping[address_1]" placeholder="<?php esc_attr_e( 'Street address', 'agent-box-orders' ); ?>">
-                            </div>
-
-                            <div class="abox-form-row">
-                                <input type="text" id="abox-shipping-address-2" name="shipping[address_2]" placeholder="<?php esc_attr_e( 'Apartment, suite, etc. (optional)', 'agent-box-orders' ); ?>">
-                            </div>
-
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-shipping-city"><?php esc_html_e( 'City', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-shipping-city" name="shipping[city]">
-                                </div>
-                                <div>
-                                    <label for="abox-shipping-postcode"><?php esc_html_e( 'Postcode', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-shipping-postcode" name="shipping[postcode]">
-                                </div>
-                            </div>
-
-                            <div class="abox-form-row abox-form-row-half">
-                                <div>
-                                    <label for="abox-shipping-country"><?php esc_html_e( 'Country', 'agent-box-orders' ); ?></label>
-                                    <select id="abox-shipping-country" name="shipping[country]">
-                                        <option value=""><?php esc_html_e( 'Select a country...', 'agent-box-orders' ); ?></option>
-                                        <?php foreach ( $countries as $code => $name ) : ?>
-                                            <option value="<?php echo esc_attr( $code ); ?>" <?php selected( $default_country, $code ); ?>>
-                                                <?php echo esc_html( $name ); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label for="abox-shipping-state"><?php esc_html_e( 'State/Region', 'agent-box-orders' ); ?></label>
-                                    <input type="text" id="abox-shipping-state" name="shipping[state]">
-                                </div>
-                            </div>
-                        </div>
+                        <button type="submit" id="abox-submit-btn" class="button button-primary button-large">
+                            <?php esc_html_e( 'Create Order', 'agent-box-orders' ); ?>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -378,7 +380,7 @@ $default_country = WC()->countries->get_base_country();
             </div>
         </td>
         <td class="abox-col-qty">
-            <input type="number" class="abox-quantity small-text" value="1" min="1" max="999" step="1">
+            <input type="number" class="abox-quantity small-text" value="1" min="1" max="9999" step="1">
         </td>
         <td class="abox-col-price">
             <span class="abox-price-display">—</span>

@@ -255,7 +255,7 @@ class ABOX_Admin_Create_Order {
                 continue;
             }
 
-            $max_qty = 999;
+            $max_qty = 9999;
             if ( 'variable' !== $product_type && $product->managing_stock() ) {
                 $stock_qty = $product->get_stock_quantity();
                 if ( $stock_qty > 0 ) {
@@ -345,7 +345,7 @@ class ABOX_Admin_Create_Order {
                 $attribute_string = implode( ', ', $attribute_parts );
             }
 
-            $max_qty = 999;
+            $max_qty = 9999;
             if ( $variation->managing_stock() ) {
                 $stock_qty = $variation->get_stock_quantity();
                 if ( $stock_qty > 0 ) {
