@@ -87,6 +87,7 @@ final class Agent_Box_Orders {
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-meta-box.php';
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-meta-box-editor.php';
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-admin-create-order.php';
+            require_once ABOX_PLUGIN_DIR . 'admin/class-abox-payment-metabox.php';
         }
 
         require_once ABOX_PLUGIN_DIR . 'public/class-abox-public.php';
@@ -97,6 +98,7 @@ final class Agent_Box_Orders {
      */
     private function init_hooks() {
         register_activation_hook( __FILE__, array( 'ABOX_Capabilities', 'activate' ) );
+        register_activation_hook( __FILE__, array( 'ABOX_Payment_Metabox', 'create_indexes' ) );
         register_deactivation_hook( __FILE__, array( 'ABOX_Capabilities', 'deactivate' ) );
 
         add_action( 'plugins_loaded', array( $this, 'init_plugin' ), 20 );

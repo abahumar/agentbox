@@ -303,3 +303,49 @@
         justify-content: center;
     }
 }
+
+/* Settings Repeater Table */
+.abox-repeater-table {
+    max-width: 800px;
+}
+
+.abox-repeater-table th {
+    padding: 8px 10px;
+    font-weight: 600;
+}
+
+.abox-repeater-table td {
+    padding: 6px 10px;
+    vertical-align: middle;
+}
+
+.abox-repeater-table input[type="color"] {
+    width: 40px;
+    height: 30px;
+    padding: 2px;
+    cursor: pointer;
+}
+
+.abox-repeater-preview {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 3px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.abox-repeater-remove .dashicons {
+    color: #a00;
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+}
+
+.abox-repeater-add .dashicons {
+    font-size: 14px;
+    width: 14px;
+    height: 14px;
+    vertical-align: text-top;
+    margin-right: 2px;
+}

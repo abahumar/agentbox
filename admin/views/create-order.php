@@ -192,11 +192,11 @@ $default_country = WC()->countries->get_base_country();
                             <label for="abox-payment-status"><?php esc_html_e( 'Payment Status', 'agent-box-orders' ); ?></label>
                             <select id="abox-payment-status" name="payment_status" style="width:100%;">
                                 <option value=""><?php esc_html_e( '— Select —', 'agent-box-orders' ); ?></option>
-                                <option value="pending"><?php esc_html_e( 'Pending Payment', 'agent-box-orders' ); ?></option>
-                                <option value="done"><?php esc_html_e( 'Done Payment', 'agent-box-orders' ); ?></option>
-                                <option value="cash_cashier"><?php esc_html_e( 'Cash di Cashier', 'agent-box-orders' ); ?></option>
-                                <option value="cod"><?php esc_html_e( 'Cash on Delivery (COD)', 'agent-box-orders' ); ?></option>
-                                <option value="partial"><?php esc_html_e( 'Partial Payment', 'agent-box-orders' ); ?></option>
+                                <?php foreach ( ABOX_Settings::get_payment_statuses() as $status ) : ?>
+                                    <option value="<?php echo esc_attr( $status['slug'] ); ?>">
+                                        <?php echo esc_html( $status['label'] ); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
@@ -204,10 +204,11 @@ $default_country = WC()->countries->get_base_country();
                             <label for="abox-collection-method"><?php esc_html_e( 'Collection Method', 'agent-box-orders' ); ?></label>
                             <select id="abox-collection-method" name="collection_method" style="width:100%;">
                                 <option value=""><?php esc_html_e( '— Select —', 'agent-box-orders' ); ?></option>
-                                <option value="postage"><?php esc_html_e( 'Postage', 'agent-box-orders' ); ?></option>
-                                <option value="pickup_hq"><?php esc_html_e( 'Pickup - HQ', 'agent-box-orders' ); ?></option>
-                                <option value="pickup_terengganu"><?php esc_html_e( 'Pickup - Terengganu', 'agent-box-orders' ); ?></option>
-                                <option value="runner_delivered"><?php esc_html_e( 'Runner Delivered', 'agent-box-orders' ); ?></option>
+                                <?php foreach ( ABOX_Settings::get_collection_methods() as $method ) : ?>
+                                    <option value="<?php echo esc_attr( $method['slug'] ); ?>">
+                                        <?php echo esc_html( $method['label'] ); ?>
+                                    </option>
+                                <?php endforeach; ?>
                             </select>
                         </div>
 
