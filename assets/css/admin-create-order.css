@@ -64,6 +64,19 @@
     flex-shrink: 0;
 }
 
+/* Customer and Shipping Row - Side by Side in Main Content */
+.abox-admin-create-order .abox-customer-shipping-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.abox-admin-create-order .abox-customer-panel,
+.abox-admin-create-order .abox-shipping-panel {
+    flex: 1;
+    margin-bottom: 0;
+}
+
 /* Sections */
 .abox-admin-create-order .abox-admin-section {
     background: #fff;
@@ -558,6 +571,16 @@
 }
 
 @media screen and (max-width: 782px) {
+    /* Stack customer and shipping panels on smaller screens */
+    .abox-admin-create-order .abox-customer-shipping-row {
+        flex-direction: column;
+    }
+
+    .abox-admin-create-order .abox-customer-panel,
+    .abox-admin-create-order .abox-shipping-panel {
+        width: 100%;
+    }
+
     /* Hide table header on mobile */
     .abox-admin-create-order .abox-items-table thead {
         display: none;

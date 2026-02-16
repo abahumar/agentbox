@@ -192,6 +192,7 @@ $default_country = WC()->countries->get_base_country();
                             <label for="abox-payment-status"><?php esc_html_e( 'Payment Status', 'agent-box-orders' ); ?></label>
                             <select id="abox-payment-status" name="payment_status" style="width:100%;">
                                 <option value=""><?php esc_html_e( '— Select —', 'agent-box-orders' ); ?></option>
+                                <option value="pending"><?php esc_html_e( 'Pending Payment', 'agent-box-orders' ); ?></option>
                                 <option value="done"><?php esc_html_e( 'Done Payment', 'agent-box-orders' ); ?></option>
                                 <option value="cash_cashier"><?php esc_html_e( 'Cash di Cashier', 'agent-box-orders' ); ?></option>
                                 <option value="cod"><?php esc_html_e( 'Cash on Delivery (COD)', 'agent-box-orders' ); ?></option>
