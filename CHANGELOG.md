@@ -5,6 +5,33 @@ All notable changes to Agent Box Orders for WooCommerce will be documented in th
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.3.0] - 2026-02-17
+
+### Added
+- **Payment & Collection Metabox**: Integrated payment status and collection method metabox into the plugin (migrated from standalone `wc-order-payment-metabox` plugin)
+  - Payment status and collection method dropdowns on order edit screen
+  - Pickup/COD date and time fields
+  - Sortable order list columns with colored badge indicators
+  - Change tracking with order notes
+  - HPOS and legacy post type support
+  - Database indexes for sorting performance
+- **Admin Settings for Payment & Collection**: New "Payment & Collection Settings" section in WooCommerce > Settings > Advanced > Agent Box Orders
+  - Repeater fields to add/remove/edit payment statuses and collection methods
+  - Customizable badge colors (background and text) per status/method
+  - Live preview of badge appearance in settings
+- **Dynamic Dropdowns**: Create Box Order page now reads payment statuses and collection methods from settings instead of hardcoded values
+- Added "Pending Payment" option to payment statuses
+- Increased maximum quantity per item from 999 to 9999
+
+### Changed
+- Receipt upload and pickup info fields integrated into Create Box Order sidebar
+- Customer and shipping address sections displayed side by side with responsive stacking
+- Updated collecting list print template
+
+### Fixed
+- Receipt upload text display
+- Customer detail metabox at Create Box Order
+
 ## [1.2.1] - 2025-02-04
 
 ### Changed

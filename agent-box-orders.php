@@ -3,7 +3,7 @@
  * Plugin Name: Agent Box Orders for WooCommerce
  * Plugin URI: https://abahumar.com/agent-box-orders
  * Description: Allows sales agents to create multi-customer box orders for WooCommerce.
- * Version: 1.2.1
+ * Version: 1.3.0
  * Requires at least: 5.8
  * Requires PHP: 7.4
  * Author: Abahumar
@@ -23,7 +23,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'ABOX_VERSION', '1.2.1' );
+define( 'ABOX_VERSION', '1.3.0' );
 define( 'ABOX_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'ABOX_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'ABOX_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
