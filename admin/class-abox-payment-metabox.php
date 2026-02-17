@@ -133,10 +133,11 @@ class ABOX_Payment_Metabox {
         $ps_colors = $this->get_colors( 'payment' );
         foreach ( $ps_colors as $slug => $c ) {
             printf(
-                '.order-status.ps-%s { background-color: %s; color: %s; }',
+                '.order-status.ps-%s { background-color: %s; color: %s; } .order-status.ps-%s span { color: inherit; }',
                 esc_attr( $slug ),
                 esc_attr( $c['bg'] ),
-                esc_attr( $c['text'] )
+                esc_attr( $c['text'] ),
+                esc_attr( $slug )
             );
         }
 
@@ -144,16 +145,17 @@ class ABOX_Payment_Metabox {
         $cm_colors = $this->get_colors( 'collection' );
         foreach ( $cm_colors as $slug => $c ) {
             printf(
-                '.order-status.cm-%s { background-color: %s; color: %s; }',
+                '.order-status.cm-%s { background-color: %s; color: %s; } .order-status.cm-%s span { color: inherit; }',
                 esc_attr( $slug ),
                 esc_attr( $c['bg'] ),
-                esc_attr( $c['text'] )
+                esc_attr( $c['text'] ),
+                esc_attr( $slug )
             );
         }
 
         // Legacy collection badges.
-        echo '.order-status.cm-pickup { background-color: #eeee22; color: #555; }';
-        echo '.order-status.cm-runner { background-color: #8224e3; color: #fff; }';
+        echo '.order-status.cm-pickup { background-color: #eeee22; color: #555; } .order-status.cm-pickup span { color: inherit; }';
+        echo '.order-status.cm-runner { background-color: #8224e3; color: #fff; } .order-status.cm-runner span { color: inherit; }';
 
         echo '</style>';
     }
