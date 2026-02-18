@@ -140,6 +140,9 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
         }
 
         .header {
+            display: flex;
+            gap: 80px;
+            align-items: flex-start;
             margin-bottom: 8px;
             padding-bottom: 6px;
             border-bottom: 1px solid #333;
@@ -149,6 +152,29 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
             font-size: 16px;
             margin: 0 0 4px 0;
             text-align: left;
+        }
+
+        .header-left {
+            flex: 0 0 auto;
+            min-width: 200px;
+        }
+
+        .header-address {
+            flex: 1;
+            padding: 6px 8px;
+            min-height: 90px;
+        }
+
+        .header-address h2 {
+            font-size: 13px;
+            font-weight: 600;
+            margin: 0 0 4px 0;
+        }
+
+        .header-address p {
+            margin: 0;
+            font-size: 12px;
+            line-height: 1.4;
         }
 
         .order-info {
@@ -266,38 +292,73 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
     </div>
 
     <div class="header">
-        <h1><?php esc_html_e( 'Packing List', 'agent-box-orders' ); ?></h1>
-        <div class="order-info">
-            <div class="order-info-item">
-                <strong><?php esc_html_e( 'Order:', 'agent-box-orders' ); ?></strong>
-                <span>#<?php echo esc_html( $order_number ); ?></span>
-            </div>
-            <div class="order-info-item">
-                <strong><?php esc_html_e( 'Date:', 'agent-box-orders' ); ?></strong>
-                <span><?php echo esc_html( $order_date ); ?></span>
-            </div>
-            <div class="order-info-item">
-                <strong><?php esc_html_e( 'Customer:', 'agent-box-orders' ); ?></strong>
-                <span><?php echo esc_html( $customer_name ); ?></span>
-            </div>
-            <?php if ( $collection_method ) : ?>
+        <div class="header-left">
+            <h1><?php esc_html_e( 'Packing List', 'agent-box-orders' ); ?></h1>
+            <div class="order-info">
                 <div class="order-info-item">
-                    <strong><?php esc_html_e( 'Collection:', 'agent-box-orders' ); ?></strong>
-                    <span><?php echo esc_html( $collection_method ); ?></span>
+                    <strong><?php esc_html_e( 'Order:', 'agent-box-orders' ); ?></strong>
+                    <span>#<?php echo esc_html( $order_number ); ?></span>
                 </div>
-            <?php endif; ?>
-            <?php if ( $pickup_cod_date ) : ?>
                 <div class="order-info-item">
-                    <strong><?php esc_html_e( 'Pickup/COD Date:', 'agent-box-orders' ); ?></strong>
-                    <span><?php echo esc_html( $pickup_cod_date ); ?></span>
+                    <strong><?php esc_html_e( 'Date:', 'agent-box-orders' ); ?></strong>
+                    <span><?php echo esc_html( $order_date ); ?></span>
                 </div>
-            <?php endif; ?>
-            <?php if ( $pickup_cod_time ) : ?>
                 <div class="order-info-item">
-                    <strong><?php esc_html_e( 'Pickup/COD Time:', 'agent-box-orders' ); ?></strong>
-                    <span><?php echo esc_html( date( 'h:iA', strtotime( $pickup_cod_time ) ) ); ?></span>
+                    <strong><?php esc_html_e( 'Customer:', 'agent-box-orders' ); ?></strong>
+                    <span><?php echo esc_html( $customer_name ); ?></span>
                 </div>
-            <?php endif; ?>
+                <?php if ( $collection_method ) : ?>
+                    <div class="order-info-item">
+                        <strong><?php esc_html_e( 'Collection:', 'agent-box-orders' ); ?></strong>
+                        <span><?php echo esc_html( $collection_method ); ?></span>
+                    </div>
+                <?php endif; ?>
+                <?php if ( $pickup_cod_date ) : ?>
+                    <div class="order-info-item">
+                        <strong><?php esc_html_e( 'Pickup/COD Date:', 'agent-box-orders' ); ?></strong>
+                        <span><?php echo esc_html( $pickup_cod_date ); ?></span>
+                    </div>
+                <?php endif; ?>
+                <?php if ( $pickup_cod_time ) : ?>
+                    <div class="order-info-item">
+                        <strong><?php esc_html_e( 'Pickup/COD Time:', 'agent-box-orders' ); ?></strong>
+                        <span><?php echo esc_html( date( 'h:iA', strtotime( $pickup_cod_time ) ) ); ?></span>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+
+        <div class="header-address">
+            <h2><?php esc_html_e( 'Billing Details', 'agent-box-orders' ); ?></h2>
+            <p>
+                <?php
+                $billing_parts = array_filter( array(
+                    trim( $order->get_billing_first_name() . ' ' . $order->get_billing_last_name() ),
+                    $order->get_billing_address_1(),
+                    $order->get_billing_address_2(),
+                    trim( $order->get_billing_city() . ( $order->get_billing_postcode() ? ' ' . $order->get_billing_postcode() : '' ) ),
+                    $order->get_billing_state(),
+                    $order->get_billing_phone(),
+                ) );
+                echo nl2br( esc_html( implode( "\n", $billing_parts ) ) );
+                ?>
+            </p>
+        </div>
+
+        <div class="header-address">
+            <h2><?php esc_html_e( 'Shipping Details', 'agent-box-orders' ); ?></h2>
+            <p>
+                <?php
+                $shipping_parts = array_filter( array(
+                    trim( $order->get_shipping_first_name() . ' ' . $order->get_shipping_last_name() ),
+                    $order->get_shipping_address_1(),
+                    $order->get_shipping_address_2(),
+                    trim( $order->get_shipping_city() . ( $order->get_shipping_postcode() ? ' ' . $order->get_shipping_postcode() : '' ) ),
+                    $order->get_shipping_state(),
+                ) );
+                echo nl2br( esc_html( implode( "\n", $shipping_parts ) ) );
+                ?>
+            </p>
         </div>
     </div>
 
