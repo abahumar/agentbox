@@ -88,6 +88,7 @@ final class Agent_Box_Orders {
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-meta-box-editor.php';
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-admin-create-order.php';
             require_once ABOX_PLUGIN_DIR . 'admin/class-abox-payment-metabox.php';
+            require_once ABOX_PLUGIN_DIR . 'admin/class-abox-order-filters.php';
         }
 
         require_once ABOX_PLUGIN_DIR . 'public/class-abox-public.php';

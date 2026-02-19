@@ -58,6 +58,7 @@ class ABOX_Loader {
             new ABOX_Meta_Box_Editor();
             new ABOX_Admin_Create_Order();
             new ABOX_Payment_Metabox();
+            new ABOX_Order_Filters();
         }
     }
 
