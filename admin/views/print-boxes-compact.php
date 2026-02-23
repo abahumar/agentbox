@@ -80,14 +80,6 @@ function abox_get_product_name( $item ) {
     return isset( $item['product_name'] ) ? $item['product_name'] : '';
 }
 
-// Split boxes into two columns
-$total_boxes  = count( $boxes );
-$half         = ceil( $total_boxes / 2 );
-$left_boxes   = array_slice( $boxes, 0, $half, true );
-$right_boxes  = array_slice( $boxes, $half, null, true );
-
-// Get the maximum number of rows needed
-$max_rows = max( count( $left_boxes ), count( $right_boxes ) );
 
 ?>
 <!DOCTYPE html>
@@ -141,7 +133,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
 
         .header {
             display: flex;
-            gap: 80px;
+            gap: 20px;
             align-items: flex-start;
             margin-bottom: 8px;
             padding-bottom: 6px;
@@ -180,7 +172,7 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
         .order-info {
             display: flex;
             flex-direction: column;
-            font-size: 15px;
+            font-size: 12px;
         }
 
         .order-info-item {
@@ -237,6 +229,10 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
         .items-table .col-qty {
             width: 30px;
             text-align: center;
+        }
+
+        .items-table .col-remark {
+            width: 50%;
         }
 
         .checkbox-cell {
@@ -363,73 +359,37 @@ $max_rows = max( count( $left_boxes ), count( $right_boxes ) );
     </div>
 
     <div class="boxes-container">
-        <!-- Left Column -->
-        <div class="boxes-column">
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th class="col-checkbox"><?php esc_html_e( '✓', 'agent-box-orders' ); ?></th>
-                        <th class="col-product"><?php esc_html_e( 'Product', 'agent-box-orders' ); ?></th>
-                        <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
-                        <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
+        <table class="items-table">
+            <thead>
+                <tr>
+                    <th class="col-checkbox"><?php esc_html_e( '✓', 'agent-box-orders' ); ?></th>
+                    <th class="col-product"><?php esc_html_e( 'Product', 'agent-box-orders' ); ?></th>
+                    <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
+                    <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
+                    <th class="col-remark"><?php esc_html_e( 'Remark', 'agent-box-orders' ); ?></th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $box_index = 0;
+                foreach ( $boxes as $box ) :
+                    $box_index++;
+                ?>
+                    <tr class="box-header-row">
+                        <td colspan="5"><?php printf( 'Box %d: %s', $box_index, esc_html( $box['label'] ) ); ?></td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $box_index = 0;
-                    foreach ( $left_boxes as $box ) :
-                        $box_index++;
-                    ?>
-                        <tr class="box-header-row">
-                            <td colspan="4"><?php printf( 'Box %d: %s', $box_index, esc_html( $box['label'] ) ); ?></td>
+                    <?php foreach ( $box['items'] as $item ) : ?>
+                        <tr>
+                            <td class="col-checkbox"><span class="checkbox-cell"></span></td>
+                            <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
+                            <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
+                            <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
+                            <td class="col-remark"></td>
                         </tr>
-                        <?php foreach ( $box['items'] as $item ) : ?>
-                            <tr>
-                                <td class="col-checkbox"><span class="checkbox-cell"></span></td>
-                                <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
-                                <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
-                                <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
                     <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-
-        <!-- Right Column -->
-        <?php if ( ! empty( $right_boxes ) ) : ?>
-        <div class="boxes-column">
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th class="col-checkbox"><?php esc_html_e( '✓', 'agent-box-orders' ); ?></th>
-                        <th class="col-product"><?php esc_html_e( 'Product', 'agent-box-orders' ); ?></th>
-                        <th class="col-variation"><?php esc_html_e( 'Variation', 'agent-box-orders' ); ?></th>
-                        <th class="col-qty"><?php esc_html_e( 'Qty', 'agent-box-orders' ); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    $right_box_index = $half;
-                    foreach ( $right_boxes as $box ) :
-                        $right_box_index++;
-                    ?>
-                        <tr class="box-header-row">
-                            <td colspan="4"><?php printf( 'Box %d: %s', $right_box_index, esc_html( $box['label'] ) ); ?></td>
-                        </tr>
-                        <?php foreach ( $box['items'] as $item ) : ?>
-                            <tr>
-                                <td class="col-checkbox"><span class="checkbox-cell"></span></td>
-                                <td class="col-product"><?php echo esc_html( abox_get_product_name( $item ) ); ?></td>
-                                <td class="col-variation"><?php echo esc_html( abox_get_variation_display( $item ) ); ?></td>
-                                <td class="col-qty"><?php echo esc_html( $item['quantity'] ); ?></td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-        <?php endif; ?>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
 </body>
 </html>
