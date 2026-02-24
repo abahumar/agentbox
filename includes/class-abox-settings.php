@@ -158,6 +158,16 @@ class ABOX_Settings {
                 'default' => self::get_default_collection_methods(),
             ),
             array(
+                'title'   => __( 'Collection Methods Requiring Date/Time', 'agent-box-orders' ),
+                'desc'    => __( 'Select which collection methods require customers to provide pickup date and time at checkout.', 'agent-box-orders' ),
+                'id'      => 'abox_collection_methods_require_datetime',
+                'type'    => 'multiselect',
+                'class'   => 'wc-enhanced-select',
+                'css'     => 'min-width: 350px;',
+                'default' => array( 'pickup_hq', 'pickup_terengganu' ),
+                'options' => self::get_collection_methods_for_select(),
+            ),
+            array(
                 'type' => 'sectionend',
                 'id'   => 'abox_payment_collection_section',
             ),
@@ -259,6 +269,33 @@ class ABOX_Settings {
         if ( false === $methods || ! is_array( $methods ) ) {
             $methods = self::get_default_collection_methods();
             update_option( 'abox_collection_methods', $methods );
+        }
+        return $methods;
+    }
+
+    /**
+     * Get collection methods formatted for select/multiselect options
+     *
+     * @return array Array of ['slug' => 'Label']
+     */
+    private static function get_collection_methods_for_select() {
+        $methods = self::get_collection_methods();
+        $options = array();
+        foreach ( $methods as $method ) {
+            $options[ $method['slug'] ] = $method['label'];
+        }
+        return $options;
+    }
+
+    /**
+     * Get collection methods that require date/time at checkout
+     *
+     * @return array Array of method slugs
+     */
+    public static function get_datetime_required_methods() {
+        $methods = get_option( 'abox_collection_methods_require_datetime', array( 'pickup_hq', 'pickup_terengganu' ) );
+        if ( ! is_array( $methods ) ) {
+            $methods = array( 'pickup_hq', 'pickup_terengganu' );
         }
         return $methods;
     }
