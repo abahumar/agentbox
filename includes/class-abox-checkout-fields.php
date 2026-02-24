@@ -82,7 +82,38 @@ class ABOX_Checkout_Fields {
 	 * Validate checkout fields
 	 */
 	public function validate_checkout_fields() {
-		// Placeholder - will implement next
+		$collection_method = isset( $_POST['collection_method'] ) ? sanitize_text_field( wp_unslash( $_POST['collection_method'] ) ) : '';
+
+		// Collection method is always required
+		if ( empty( $collection_method ) ) {
+			wc_add_notice( __( 'Please select a collection method.', 'agent-box-orders' ), 'error' );
+			return;
+		}
+
+		// Validate collection method is a valid option
+		$collection_methods = ABOX_Settings::get_collection_methods();
+		$valid_slugs        = wp_list_pluck( $collection_methods, 'slug' );
+
+		if ( ! in_array( $collection_method, $valid_slugs, true ) ) {
+			wc_add_notice( __( 'Invalid collection method selected.', 'agent-box-orders' ), 'error' );
+			return;
+		}
+
+		// Check if this method requires date/time
+		$datetime_required_methods = ABOX_Settings::get_datetime_required_methods();
+
+		if ( in_array( $collection_method, $datetime_required_methods, true ) ) {
+			$pickup_date = isset( $_POST['pickup_date'] ) ? sanitize_text_field( wp_unslash( $_POST['pickup_date'] ) ) : '';
+			$pickup_time = isset( $_POST['pickup_time'] ) ? sanitize_text_field( wp_unslash( $_POST['pickup_time'] ) ) : '';
+
+			if ( empty( $pickup_date ) ) {
+				wc_add_notice( __( 'Please select a pickup date for your chosen collection method.', 'agent-box-orders' ), 'error' );
+			}
+
+			if ( empty( $pickup_time ) ) {
+				wc_add_notice( __( 'Please select a pickup time for your chosen collection method.', 'agent-box-orders' ), 'error' );
+			}
+		}
 	}
 
 	/**
