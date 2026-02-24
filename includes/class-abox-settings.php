@@ -24,6 +24,7 @@ class ABOX_Settings {
         add_action( 'woocommerce_admin_field_abox_repeater', array( $this, 'render_repeater_field' ) );
         add_action( 'woocommerce_admin_settings_sanitize_option_abox_payment_statuses', array( $this, 'sanitize_repeater' ), 10, 3 );
         add_action( 'woocommerce_admin_settings_sanitize_option_abox_collection_methods', array( $this, 'sanitize_repeater' ), 10, 3 );
+        add_action( 'woocommerce_admin_settings_sanitize_option_abox_collection_methods_require_datetime', array( $this, 'sanitize_collection_methods_datetime' ), 10, 3 );
         add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_settings_scripts' ) );
     }
 
@@ -281,8 +282,16 @@ class ABOX_Settings {
     private static function get_collection_methods_for_select() {
         $methods = self::get_collection_methods();
         $options = array();
+
+        if ( empty( $methods ) || ! is_array( $methods ) ) {
+            return $options;
+        }
+
         foreach ( $methods as $method ) {
-            $options[ $method['slug'] ] = $method['label'];
+            // Validate array structure
+            if ( isset( $method['slug'], $method['label'] ) ) {
+                $options[ $method['slug'] ] = $method['label'];
+            }
         }
         return $options;
     }
@@ -294,9 +303,25 @@ class ABOX_Settings {
      */
     public static function get_datetime_required_methods() {
         $methods = get_option( 'abox_collection_methods_require_datetime', array( 'pickup_hq', 'pickup_terengganu' ) );
-        if ( ! is_array( $methods ) ) {
-            $methods = array( 'pickup_hq', 'pickup_terengganu' );
+
+        if ( ! is_array( $methods ) || empty( $methods ) ) {
+            return array( 'pickup_hq', 'pickup_terengganu' );
         }
+
+        // Validate against actual collection methods
+        $valid_methods = array_keys( self::get_collection_methods_for_select() );
+        $methods       = array_filter(
+            $methods,
+            function ( $slug ) use ( $valid_methods ) {
+                return in_array( $slug, $valid_methods, true );
+            }
+        );
+
+        // If filtering removed all methods, return defaults
+        if ( empty( $methods ) ) {
+            return array( 'pickup_hq', 'pickup_terengganu' );
+        }
+
         return $methods;
     }
 
@@ -381,6 +406,34 @@ class ABOX_Settings {
                 'text_color' => sanitize_hex_color( $row['text_color'] ?? '#ffffff' ) ?: '#ffffff',
             );
         }
+        return $sanitized;
+    }
+
+    /**
+     * Sanitize collection methods requiring datetime
+     *
+     * @param mixed $value     The value to sanitize.
+     * @param array $option    The option array.
+     * @param mixed $raw_value The raw value.
+     * @return array
+     */
+    public function sanitize_collection_methods_datetime( $value, $option, $raw_value ) {
+        if ( ! is_array( $raw_value ) ) {
+            return array();
+        }
+
+        // Get valid collection method slugs
+        $valid_methods = array_keys( self::get_collection_methods_for_select() );
+
+        // Only keep valid method slugs
+        $sanitized = array();
+        foreach ( $raw_value as $method_slug ) {
+            $clean_slug = sanitize_key( $method_slug );
+            if ( in_array( $clean_slug, $valid_methods, true ) ) {
+                $sanitized[] = $clean_slug;
+            }
+        }
+
         return $sanitized;
     }
 
