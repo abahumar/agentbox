@@ -48,6 +48,9 @@ class ABOX_Loader {
         // Checkout integration
         new ABOX_Checkout();
 
+        // Checkout fields for collection method
+        new ABOX_Checkout_Fields();
+
         // Public assets
         new ABOX_Public();
 

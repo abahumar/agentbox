@@ -80,6 +80,7 @@ final class Agent_Box_Orders {
         require_once ABOX_PLUGIN_DIR . 'includes/class-abox-shortcode.php';
         require_once ABOX_PLUGIN_DIR . 'includes/class-abox-ajax.php';
         require_once ABOX_PLUGIN_DIR . 'includes/class-abox-checkout.php';
+        require_once ABOX_PLUGIN_DIR . 'includes/class-abox-checkout-fields.php';
         require_once ABOX_PLUGIN_DIR . 'includes/class-abox-loader.php';
 
         if ( is_admin() ) {
