@@ -122,7 +122,31 @@ class ABOX_Checkout_Fields {
 	 * @param int $order_id Order ID.
 	 */
 	public function save_checkout_fields( $order_id ) {
-		// Placeholder - will implement next
+		$order = wc_get_order( $order_id );
+
+		if ( ! $order ) {
+			return;
+		}
+
+		// Save collection method
+		if ( isset( $_POST['collection_method'] ) ) {
+			$collection_method = sanitize_text_field( wp_unslash( $_POST['collection_method'] ) );
+			$order->update_meta_data( '_collection_method', $collection_method );
+		}
+
+		// Save pickup date
+		if ( isset( $_POST['pickup_date'] ) && ! empty( $_POST['pickup_date'] ) ) {
+			$pickup_date = sanitize_text_field( wp_unslash( $_POST['pickup_date'] ) );
+			$order->update_meta_data( '_pickup_cod_date', $pickup_date );
+		}
+
+		// Save pickup time
+		if ( isset( $_POST['pickup_time'] ) && ! empty( $_POST['pickup_time'] ) ) {
+			$pickup_time = sanitize_text_field( wp_unslash( $_POST['pickup_time'] ) );
+			$order->update_meta_data( '_pickup_cod_time', $pickup_time );
+		}
+
+		$order->save();
 	}
 
 	/**
