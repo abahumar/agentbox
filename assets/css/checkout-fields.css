@@ -1,0 +1,31 @@
+/**
+ * Checkout Collection Fields Styling
+ */
+
+/* Collection Details Section */
+.woocommerce-checkout #collection_method_field,
+.woocommerce-checkout #pickup_date_field,
+.woocommerce-checkout #pickup_time_field {
+	margin-bottom: 1em;
+}
+
+/* Add spacing before collection method to separate from billing */
+.woocommerce-checkout #collection_method_field {
+	margin-top: 1.5em;
+	padding-top: 1.5em;
+	border-top: 1px solid #e0e0e0;
+}
+
+/* Hide pickup fields by default (JS will show when needed) */
+.woocommerce-checkout #pickup_date_field,
+.woocommerce-checkout #pickup_time_field {
+	display: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+	.woocommerce-checkout #collection_method_field {
+		margin-top: 1em;
+		padding-top: 1em;
+	}
+}

@@ -153,6 +153,35 @@ class ABOX_Checkout_Fields {
 	 * Enqueue scripts for conditional field display
 	 */
 	public function enqueue_scripts() {
-		// Placeholder - will implement next
+		// Only load on checkout page
+		if ( ! is_checkout() ) {
+			return;
+		}
+
+		// Enqueue CSS
+		wp_enqueue_style(
+			'abox-checkout-fields',
+			ABOX_PLUGIN_URL . 'assets/css/checkout-fields.css',
+			array(),
+			ABOX_VERSION
+		);
+
+		// Enqueue JavaScript
+		wp_enqueue_script(
+			'abox-checkout-fields',
+			ABOX_PLUGIN_URL . 'assets/js/checkout-fields.js',
+			array( 'jquery' ),
+			ABOX_VERSION,
+			true
+		);
+
+		// Localize script with datetime-required methods
+		wp_localize_script(
+			'abox-checkout-fields',
+			'aboxCheckoutFieldsVars',
+			array(
+				'methodsRequireDateTime' => ABOX_Settings::get_datetime_required_methods(),
+			)
+		);
 	}
 }
