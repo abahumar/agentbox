@@ -31,7 +31,50 @@ class ABOX_Checkout_Fields {
 	 * @return array
 	 */
 	public function add_checkout_fields( $fields ) {
-		// Placeholder - will implement next
+		$collection_methods = ABOX_Settings::get_collection_methods();
+
+		// Don't add fields if no collection methods configured
+		if ( empty( $collection_methods ) ) {
+			return $fields;
+		}
+
+		// Build options array for select field
+		$method_options = array( '' => __( '— Select Collection Method —', 'agent-box-orders' ) );
+		foreach ( $collection_methods as $method ) {
+			$method_options[ $method['slug'] ] = $method['label'];
+		}
+
+		// Add collection method field
+		$fields['billing']['collection_method'] = array(
+			'type'     => 'select',
+			'label'    => __( 'Collection Method', 'agent-box-orders' ),
+			'required' => true,
+			'class'    => array( 'form-row-wide' ),
+			'priority' => 25,
+			'options'  => $method_options,
+		);
+
+		// Add pickup date field
+		$fields['billing']['pickup_date'] = array(
+			'type'              => 'date',
+			'label'             => __( 'Pickup Date', 'agent-box-orders' ),
+			'required'          => false,
+			'class'             => array( 'form-row-wide', 'abox-pickup-field' ),
+			'priority'          => 26,
+			'custom_attributes' => array(
+				'min' => gmdate( 'Y-m-d' ),
+			),
+		);
+
+		// Add pickup time field
+		$fields['billing']['pickup_time'] = array(
+			'type'     => 'time',
+			'label'    => __( 'Pickup Time', 'agent-box-orders' ),
+			'required' => false,
+			'class'    => array( 'form-row-wide', 'abox-pickup-field' ),
+			'priority' => 27,
+		);
+
 		return $fields;
 	}
 
